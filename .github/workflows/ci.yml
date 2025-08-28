@@ -1,0 +1,40 @@
+# develop 브랜치로 PR 시 빌드 테스트 진행
+name: PR Build and Test
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      # 저장소 checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # pnpm 설치
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      # Node.js 환경 설정
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # 의존성 설치
+      - name: Install dependencies
+        run: pnpm install
+
+      # ESLint 검사
+      - name: Run ESLint
+        run: pnpm eslint . --ext .ts,.tsx,.js,.jsx
+
+      # 빌드 테스트
+      - name: Build project
+        run: pnpm run build
