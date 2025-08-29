@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* 전역 높이 채우기 */
+@layer base {
+    html, body, #root {
+        height: 100%;
+    }
+}
