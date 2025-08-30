@@ -1,13 +1,18 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "./index.css";
 import App from "./App";
 import Home from "./pages/Home.tsx";
-import About from "./pages/About.tsx";
+import Login from "./pages/Login.tsx";
+import Protected from "@/lib/routes/Protected.tsx";
 
 // 라우터 구성
 const router = createBrowserRouter([
@@ -15,8 +20,14 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <Home /> },
-      { path: "about", element: <About /> },
+      { path: "login", element: <Login /> },
+      {
+        element: <Protected />,
+        children: [
+          { index: true, element: <Navigate to="home" replace /> },
+          { path: "home", element: <Home /> },
+        ],
+      },
     ],
   },
 ]);
@@ -26,8 +37,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 60_000,
-      refetchOnWindowFocus: false,
-      retry: 1,
+      retry: 0,
     },
   },
 });

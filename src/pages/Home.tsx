@@ -1,19 +1,17 @@
-import Header from "../components/Header";
-import Card from "../components/Card";
-import Footer from "../components/Footer";
+import { useMe } from "@/hooks/useMe";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function Home() {
-    return (
-        <div className="min-h-screen flex flex-col">
-            <Header />
-
-            <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card title="첫 번째 카드" description="설명 텍스트 1" />
-                <Card title="두 번째 카드" description="설명 텍스트 2" />
-                <Card title="세 번째 카드" description="설명 텍스트 3" />
-            </main>
-
-            <Footer />
-        </div>
-    );
+  const { data } = useMe(); // 보호 라우트 통과 후라면 항상 존재
+  return (
+    <div className="p-6 space-y-3">
+      <div className="flex items-center gap-3">
+        <h1 className="text-xl font-semibold">대시보드</h1>
+        <LogoutButton />
+      </div>
+      <pre className="bg-gray-100 p-3 text-xs overflow-auto rounded">
+        {JSON.stringify(data, null, 2)}
+      </pre>
+    </div>
+  );
 }
