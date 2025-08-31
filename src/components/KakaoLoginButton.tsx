@@ -1,21 +1,18 @@
-// src/components/KakaoLoginButton.tsx
-import { useState, useEffect } from "react";
-import { useInvalidateMe } from "@/hooks/useMe";
-import { initKakao, kakaoPopupLogin } from "@/lib/api/kakao.ts";
+import { useState } from "react";
+import { kakaoPopupLogin } from "@/lib/api/kakao.ts";
 
-export default function KakaoLoginButton() {
+interface Props {
+  onSuccess?: (accessToken: string) => void;
+}
+
+export default function KakaoLoginButton({ onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
-  const invalidateMe = useInvalidateMe();
-
-  useEffect(() => {
-    initKakao();
-  }, []);
 
   const onClick = async () => {
     try {
       setLoading(true);
-      await kakaoPopupLogin();
-      await invalidateMe(); // me 다시 조회
+      const at = await kakaoPopupLogin();
+      if (onSuccess) onSuccess(at);
     } catch (e) {
       alert("카카오 로그인 실패");
       console.error(e);
@@ -28,9 +25,9 @@ export default function KakaoLoginButton() {
     <button
       onClick={onClick}
       disabled={loading}
-      className="px-4 py-2 rounded bg-yellow-400 text-black"
+      className="px-4 py-2 rounded bg-primary text-black"
     >
-      {loading ? "로그인 중…" : "카카오로 로그인(프론트 테스트)"}
+      {loading ? "로그인 중…" : "카카오로 로그인"}
     </button>
   );
 }
