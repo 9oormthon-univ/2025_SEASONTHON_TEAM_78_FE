@@ -1,7 +1,6 @@
-// src/pages/Login.tsx
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { kakaoPopupLogin } from "@/lib/api/kakao.ts";
+import KakaoLoginButton from "@/components/KakaoLoginButton";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,28 +8,18 @@ export default function Login() {
   const qc = useQueryClient();
   const from = (location.state as any)?.from?.pathname || "/";
 
-  const handleKakaoLogin = async () => {
-    try {
-      const at = await kakaoPopupLogin(); // SDK 준비 + 로그인까지 보장
-      console.log("[login] accessToken:", at);
+  const handleSuccess = async (at: string) => {
+    console.log("[login] accessToken:", at);
 
-      await qc.invalidateQueries({ queryKey: ["me"] }); // me 최신화
-      navigate(from, { replace: true }); // 홈(또는 원래 경로) 이동
-    } catch (e: any) {
-      console.error("[login error]", e);
-      alert(e?.error_description || e?.message || "로그인 실패");
-    }
+    await qc.invalidateQueries({ queryKey: ["me"] });
+    navigate(from, { replace: true });
   };
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-xl font-semibold">로그인이 필요합니다</h1>
-      <button
-        onClick={handleKakaoLogin}
-        className="px-4 py-2 rounded bg-yellow-400"
-      >
-        카카오로 로그인
-      </button>
+    <div className={"flex flex-col p-10 gap-5 items-center justify-center"}>
+      <h1 className="text-2xl  font-vitro-core">Minimo</h1>
+      <p className="text-xl font-semi">미니모에 오신 걸 환영해요!</p>
+      <KakaoLoginButton onSuccess={handleSuccess} />
     </div>
   );
 }

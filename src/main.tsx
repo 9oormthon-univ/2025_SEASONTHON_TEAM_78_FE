@@ -26,6 +26,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="home" replace /> },
           { path: "home", element: <Home /> },
+          // { path: "home", element: <Home /> }, -> 로그인 후, 사용할 페이지 추가
         ],
       },
     ],
