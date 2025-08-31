@@ -22,7 +22,7 @@ const BackHeader = ({ title, icon, actionPath }: BackHeaderProps) => {
   };
 
   return (
-    <div className="fixed top-0 w-full max-w-[480px] flex items-center justify-between p-3 px-5 bg-[#F8F8F8] z-50">
+    <div className="sticky top-0 flex items-center justify-between p-3 px-5 bg-[#F8F8F8] z-50">
       <button
         type="button"
         onClick={handleClickBack}
@@ -35,7 +35,7 @@ const BackHeader = ({ title, icon, actionPath }: BackHeaderProps) => {
         {title}
       </h1>
 
-      {icon && (
+      {icon ? (
         <button
           type="button"
           onClick={handleClickAction}
@@ -43,6 +43,9 @@ const BackHeader = ({ title, icon, actionPath }: BackHeaderProps) => {
         >
           {icon}
         </button>
+      ) : (
+        //아이콘 없으면 오른쪽 자리 채움
+        <span className="block w-6 h-6" aria-hidden />
       )}
     </div>
   );

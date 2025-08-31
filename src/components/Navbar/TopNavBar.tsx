@@ -19,7 +19,7 @@ function TopNavBar({ title, showToday = false, icon }: TopNavBarProps) {
   const display = showToday ? today : title;
 
   return (
-    <div className="fixed top-0 w-full max-w-[480px] flex items-center gap-4 px-4 pt-[65px] pb-3.5 bg-white/70 border-b border-[#f4f7fb] backdrop-blur-[10px] z-50">
+    <div className="sticky top-0 flex items-center gap-4 px-4 pt-4 pb-3.5 bg-white/70 border-b border-[#f4f7fb] backdrop-blur-[10px] z-50">
       <div className="flex items-center gap-2">
         <p className="text-3xl text-left text-[#161616] select-none truncate">
           {display}
