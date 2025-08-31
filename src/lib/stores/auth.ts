@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import type { KakaoProfile } from "@/types/kakao";
 
 type AuthStatus = "anonymous" | "authenticated";
-
 interface AuthState {
   status: AuthStatus;
-  user: KakaoProfile | null;
-  setUser: (u: KakaoProfile | null) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  user: any | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setUser: (u: any | null) => void;
   setStatus: (s: AuthStatus) => void;
   reset: () => void;
 }
