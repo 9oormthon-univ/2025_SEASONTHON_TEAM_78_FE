@@ -1,10 +1,12 @@
 import { create } from "zustand";
+import type { KakaoProfile } from "@/types/kakao";
 
 type AuthStatus = "anonymous" | "authenticated";
+
 interface AuthState {
   status: AuthStatus;
-  user: any | null; // kakao /v2/user/me 결과
-  setUser: (u: any | null) => void;
+  user: KakaoProfile | null;
+  setUser: (u: KakaoProfile | null) => void;
   setStatus: (s: AuthStatus) => void;
   reset: () => void;
 }

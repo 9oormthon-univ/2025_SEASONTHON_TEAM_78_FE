@@ -1,6 +1,25 @@
 declare global {
   interface Window {
-    Kakao?: any;
+    Kakao?: {
+      isInitialized(): boolean;
+      init(key: string): void;
+      Auth: {
+        login(options: {
+          scope?: string;
+          success: () => void;
+          fail: (err: unknown) => void;
+        }): void;
+        logout(callback: () => void): void;
+        getAccessToken(): string | null;
+      };
+      API: {
+        request(options: {
+          url: string;
+          success: (res: unknown) => void;
+          fail: (err: unknown) => void;
+        }): void;
+      };
+    };
   }
 }
 
@@ -12,6 +31,7 @@ function loadKakaoSdk(): Promise<void> {
     const existed = document.querySelector(
       'script[src*="kakao.min.js"]',
     ) as HTMLScriptElement | null;
+
     if (existed) {
       existed.addEventListener("load", () => resolve());
       existed.addEventListener("error", () =>
@@ -30,7 +50,7 @@ function loadKakaoSdk(): Promise<void> {
 }
 
 /** SDK가 로드되고 init까지 된 상태를 보장 */
-export async function ensureKakaoReady() {
+export async function ensureKakaoReady(): Promise<void> {
   await loadKakaoSdk();
 
   if (!window.Kakao) throw new Error("Kakao SDK not found");
@@ -49,10 +69,10 @@ export async function kakaoPopupLogin(): Promise<string> {
   await ensureKakaoReady();
 
   return new Promise((resolve, reject) => {
-    window.Kakao.Auth.login({
+    window.Kakao!.Auth.login({
       scope: "profile_nickname",
       success: () => {
-        const at = window.Kakao.Auth.getAccessToken();
+        const at = window.Kakao!.Auth.getAccessToken();
         if (!at) return reject(new Error("Access token missing"));
         resolve(at);
       },
@@ -62,13 +82,14 @@ export async function kakaoPopupLogin(): Promise<string> {
 }
 
 /** 프로필 조회 */
-export async function fetchKakaoMe(): Promise<any> {
+export async function fetchKakaoMe(): Promise<unknown> {
   await ensureKakaoReady();
+
   return new Promise((resolve, reject) => {
-    window.Kakao.API.request({
+    window.Kakao!.API.request({
       url: "/v2/user/me",
-      success: resolve,
-      fail: reject,
+      success: (res: unknown) => resolve(res),
+      fail: (err: unknown) => reject(err),
     });
   });
 }
@@ -76,7 +97,8 @@ export async function fetchKakaoMe(): Promise<any> {
 /** 로그아웃 (토큰만 해제) */
 export async function kakaoLogout(): Promise<void> {
   await ensureKakaoReady();
+
   return new Promise((resolve) => {
-    window.Kakao.Auth.logout(() => resolve());
+    window.Kakao!.Auth.logout(() => resolve());
   });
 }
