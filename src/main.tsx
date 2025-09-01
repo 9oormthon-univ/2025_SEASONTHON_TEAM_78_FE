@@ -14,6 +14,7 @@ import Login from "./pages/Login.tsx";
 import Protected from "@/lib/routes/Protected.tsx";
 import ProfileSelect from "./pages/ProfileSelect.tsx";
 import Collection from "./pages/Collection";
+import Home from "./pages/Home";
 
 // 라우터 구성
 const router = createBrowserRouter([
@@ -25,8 +26,9 @@ const router = createBrowserRouter([
       {
         element: <Protected />,
         children: [
-          { index: true, element: <Navigate to="profile-select" replace /> },
+          { index: true, element: <Navigate to="home" replace /> },
           { path: "profile-select", element: <ProfileSelect /> },
+          { path: "home", element: <Home /> },
           { path: "collection", element: <Collection /> },
         ],
       },
