@@ -22,7 +22,6 @@ const ITEMS: Item[] = [
   { id: 3, icon: "broom", title: "청소하기", endDate: "2025. 08. 29" },
   { id: 4, icon: "bus", title: "버스 이용하기", endDate: "2025. 08. 20" },
   { id: 5, icon: "edit", title: "일기 쓰기", endDate: "2025. 08. 29" },
-  { id: 6, icon: "ball", title: "운동하기", endDate: "2025. 08. 18" },
 ];
 
 function CollectionPage() {
