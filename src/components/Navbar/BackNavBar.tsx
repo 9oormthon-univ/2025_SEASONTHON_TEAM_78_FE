@@ -31,9 +31,7 @@ const BackHeader = ({ title, icon, actionPath }: BackHeaderProps) => {
         <img src={Back} alt="뒤로가기" className="w-6 h-6" />
       </button>
 
-      <h1 className="select-none font-[pretendard] font-semibold text-sm">
-        {title}
-      </h1>
+      <h1 className="select-none font-sans font-semibold text-sm">{title}</h1>
 
       {icon ? (
         <button

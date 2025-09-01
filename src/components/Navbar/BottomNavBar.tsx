@@ -25,7 +25,7 @@ function BottomNavBar() {
     <nav
       className="
         fixed left-1/2 bottom-[24px] -translate-x-1/2
-        w-[345px] h-[77px] px-6 py-3
+        w-[400px] h-[77px] px-6 py-3
         rounded-[80px] bg-[#2a2c2e]/80 backdrop-blur-[10px]
         shadow-[0_4px_10px_rgba(0,0,0,0.16)]
         z-50

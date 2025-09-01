@@ -1,8 +1,8 @@
-@import "tailwindcss"; /* Pretendard (기본 본문 글꼴) */
+@import "tailwindcss";
+
 @font-face {
   font-family: "Pretendard";
   font-weight: 400;
-  font-style: normal;
   font-display: swap;
   src:
     local("Pretendard Regular"),
@@ -12,7 +12,6 @@
 @font-face {
   font-family: "Pretendard";
   font-weight: 500;
-  font-style: normal;
   font-display: swap;
   src:
     local("Pretendard Medium"),
@@ -22,7 +21,6 @@
 @font-face {
   font-family: "Pretendard";
   font-weight: 600;
-  font-style: normal;
   font-display: swap;
   src:
     local("Pretendard SemiBold"),
@@ -32,7 +30,6 @@
 @font-face {
   font-family: "Pretendard";
   font-weight: 700;
-  font-style: normal;
   font-display: swap;
   src:
     local("Pretendard Bold"),
@@ -48,7 +45,7 @@
   --font-sans:
     "Pretendard", "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
 
-  --font-dunkel: "dunkel-sans-medium", sans-serif;
+  --font-dunkel: "dunkel-sans-expanded", sans-serif;
 }
 
 @layer base {
