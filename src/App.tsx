@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import MobileLayout from "./components/MobileLayout";
+import MobileLayout from "./components/common/MobileLayout";
 
 export default function App() {
   return (
