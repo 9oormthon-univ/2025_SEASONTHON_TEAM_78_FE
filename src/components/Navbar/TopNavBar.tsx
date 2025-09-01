@@ -21,7 +21,7 @@ function TopNavBar({ title, showToday = false, icon }: TopNavBarProps) {
   return (
     <div className="sticky top-0 flex items-center gap-4 px-4 pt-4 pb-3.5 bg-white/70 border-b border-[#f4f7fb] backdrop-blur-[10px] z-50">
       <div className="flex items-center gap-2">
-        <p className="text-3xl text-left text-[#161616] select-none truncate">
+        <p className="tk-dunkel-sans-expanded text-3xl text-left text-[#161616] select-none truncate">
           {display}
         </p>
         {icon}
