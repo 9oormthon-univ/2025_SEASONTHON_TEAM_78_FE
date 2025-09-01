@@ -54,7 +54,6 @@ function CollectionPage() {
             <ChallengeIcon
               name={it.icon}
               variant="color"
-              className="w-[clamp(26px,6.5vw,32px)] h-[clamp(26px,6.5vw,32px)]"
               alt={`${it.icon} icon`}
             />
             <p className="w-[85%] text-sm font-bold text-center text-black break-words whitespace-normal">

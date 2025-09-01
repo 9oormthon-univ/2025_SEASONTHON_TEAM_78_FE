@@ -26,16 +26,12 @@ const ICONS: Record<IconName, Record<IconVariant, string>> = {
 interface ChallengeIconProps {
   name: IconName;
   variant?: IconVariant;
-  size?: number; // px 기본 24
-  className?: string; // 간격 패딩 필요할경우
   alt?: string;
 }
 
 function ChallengeIcon({
   name,
   variant = "black",
-  size = 24,
-  className,
   alt = "",
 }: ChallengeIconProps) {
   const src = ICONS[name][variant];
@@ -44,8 +40,7 @@ function ChallengeIcon({
     <img
       src={src}
       alt={alt}
-      className={className}
-      style={{ width: size, height: size }}
+      className="w-[clamp(26px,6.5vw,32px)] h-[clamp(26px,6.5vw,32px)]"
       loading="lazy"
       decoding="async"
     />
