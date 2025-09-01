@@ -9,12 +9,7 @@ interface CollectionCardProps {
 function CollectionCard({ icon, title, endDate }: CollectionCardProps) {
   return (
     <div className="flex flex-col items-center justify-center w-full aspect-square gap-1.5 rounded-[20px] bg-[#f4f7fb] px-2 py-3">
-      <ChallengeIcon
-        name={icon}
-        variant="color"
-        className="w-[clamp(26px,6.5vw,32px)] h-[clamp(26px,6.5vw,32px)]"
-        alt={`${icon} icon`}
-      />
+      <ChallengeIcon name={icon} variant="color" alt={`${icon} icon`} />
 
       <p className="w-[85%] text-sm font-bold text-center text-black break-words whitespace-normal">
         {title}
