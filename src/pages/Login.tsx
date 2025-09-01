@@ -24,18 +24,20 @@ export default function Login() {
   return (
     <div
       className={
-        "flex flex-col min-h-dvh gap-10 p-10 items-center justify-center"
+        "flex flex-col min-h-dvh py-15 px-10 items-center justify-between"
       }
     >
-      <div className="flex flex-col gap-5 items-center justify-center">
-        <h1 className="text-5xl font-dunkel">Minimo</h1>
-        <p className="text-2xl font-semibold">미니모에 오신 걸 환영해요!</p>
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-5 mt-10 items-center justify-center">
+          <h1 className="text-5xl font-dunkel">Minimo</h1>
+          <p className="text-2xl font-semibold">미니모에 오신 걸 환영해요!</p>
+        </div>
+        <img
+          src="/images/temp-img.webp"
+          alt="미니모 환영 이미지"
+          className="w-60"
+        />
       </div>
-      <img
-        src="public/images/temp-img.webp"
-        alt="미니모 환영 이미지"
-        className="my-4 w-48"
-      />
       <KakaoLoginButton onSuccess={handleSuccess} />
     </div>
   );

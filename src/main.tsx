@@ -30,6 +30,7 @@ const router = createBrowserRouter([
           { path: "collection", element: <Collection /> },
         ],
       },
+      { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ]);
