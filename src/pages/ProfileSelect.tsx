@@ -1,17 +1,19 @@
 import { useMe } from "@/hooks/useMe";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
-import ProfileSelectModal from "@/components/features/home/ProfileSelectModal";
+import ProfileSelectModal from "@/components/common/ProfileSelectModal";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ImageOption {
   id: number;
   src: string;
   alt: string;
-  imgClass: string;
+  imgClass?: string;
 }
 
 export default function ProfileSelect() {
   const { data } = useMe();
+  const navigate = useNavigate();
 
   const nickname = data?.properties?.nickname ?? "";
 
@@ -26,6 +28,12 @@ export default function ProfileSelect() {
     console.log("선택된 프로필:", imageInfo);
   };
 
+  const handleNext = () => {
+    if (selectedImage !== null) {
+      navigate("/home");
+    }
+  };
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeModal();
@@ -35,24 +43,25 @@ export default function ProfileSelect() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-dvh gap-10 p-10 items-center justify-center">
-      <p className="text-2xl font-semibold text-center">
-        {nickname ? `반가워요 ${nickname}님!` : "반갑습니다."} <br />
-        사용하실 프로필을 골라주세요.
-      </p>
-
-      <div className="flex items-center gap-5">
+    <div className="flex flex-col min-h-dvh py-15 px-10 items-center justify-between">
+      <div className="flex flex-col mt-10 items-center justify-center">
+        <p className="text-2xl font-semibold">
+          {nickname ? `반가워요 ${nickname}님!` : "반갑습니다."}
+        </p>
+        <p className="text-2xl font-semibold">사용하실 프로필을 골라주세요.</p>
+      </div>
+      <div className="flex flex-col items-center gap-5">
         {selectedImage !== null ? (
           <button
             type="button"
             onClick={openModal}
-            className="w-28 h-28 rounded-2xl overflow-hidden border bg-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-200 transition hover:shadow-md"
+            className="w-[70%] h-[70%] p-10 rounded overflow-hidden border bg-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-200 transition hover:shadow-md"
             aria-label="이미지 선택 열기"
           >
             <img
               src={selectedImage.src}
               alt={selectedImage.alt}
-              className={`w-full h-full object-contain p-1 ${selectedImage.imgClass || ""}`}
+              className={`w-full h-full object-contain ${selectedImage.imgClass || ""}`}
             />
           </button>
         ) : (
@@ -65,9 +74,12 @@ export default function ProfileSelect() {
             +
           </button>
         )}
+        <p className="text-2xl font-bold">{nickname}</p>
       </div>
-
-      <BoxButtonLarge disabled={selectedImage === null}>다음</BoxButtonLarge>
+      {/* TODO: 이미지 선택 안 하고 다음 누르면 스낵바 */}
+      <BoxButtonLarge disabled={selectedImage === null} onClick={handleNext}>
+        다음
+      </BoxButtonLarge>
 
       <ProfileSelectModal
         isOpen={isModalOpen}

@@ -28,7 +28,7 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
       className="w-full h-12 px-4 py-2 rounded bg-[#FEE500] font-semibold flex items-center justify-center gap-3"
     >
       <img
-        src="/public/images/bubble-icon.webp"
+        src="/images/bubble-icon.webp"
         alt="카카오 로그인 버튼"
         className="w-5 h-5"
       />
