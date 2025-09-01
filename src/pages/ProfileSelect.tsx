@@ -2,6 +2,7 @@ import { useMe } from "@/hooks/useMe";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 import ProfileSelectModal from "@/components/common/ProfileSelectModal";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ImageOption {
   id: number;
@@ -12,6 +13,7 @@ interface ImageOption {
 
 export default function ProfileSelect() {
   const { data } = useMe();
+  const navigate = useNavigate();
 
   const nickname = data?.properties?.nickname ?? "";
 
@@ -24,6 +26,12 @@ export default function ProfileSelect() {
   const handleSelect = (imageInfo: ImageOption) => {
     setSelectedImage(imageInfo);
     console.log("선택된 프로필:", imageInfo);
+  };
+
+  const handleNext = () => {
+    if (selectedImage !== null) {
+      navigate("/home");
+    }
   };
 
   useEffect(() => {
@@ -68,8 +76,10 @@ export default function ProfileSelect() {
         )}
         <p className="text-2xl font-bold">{nickname}</p>
       </div>
-
-      <BoxButtonLarge disabled={selectedImage === null}>다음</BoxButtonLarge>
+      {/* TODO: 이미지 선택 안 하고 다음 누르면 스낵바 */}
+      <BoxButtonLarge disabled={selectedImage === null} onClick={handleNext}>
+        다음
+      </BoxButtonLarge>
 
       <ProfileSelectModal
         isOpen={isModalOpen}
