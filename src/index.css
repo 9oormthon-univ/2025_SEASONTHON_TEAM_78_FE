@@ -1,27 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Vitro Core";
-  src: url("../public/fonts/VITRO CORE TTF.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Vitro Inspire";
-  src: url("../public/fonts/VITRO INSPIRE TTF.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Vitro Pride";
-  src: url("../public/fonts/VITRO PRIDE TTF.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
   --color-primary: #4672ff;
   --color-primary-secondary: #8db7ff;
@@ -30,9 +8,7 @@
   --font-sans:
     "Pretendard", "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
 
-  --font-vitro-core: "Vitro Core", var(--font-sans);
-  --font-vitro-inspire: "Vitro Inspire", var(--font-sans);
-  --font-vitro-pride: "Vitro Pride", var(--font-sans);
+  --font-dunkel: "dunkel-sans-medium", sans-serif;
 }
 
 @layer base {
