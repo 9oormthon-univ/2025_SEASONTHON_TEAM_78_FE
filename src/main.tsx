@@ -13,6 +13,7 @@ import App from "./App";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import Protected from "@/lib/routes/Protected.tsx";
+import Collection from "./pages/Collection";
 
 // 라우터 구성
 const router = createBrowserRouter([
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="home" replace /> },
           { path: "home", element: <Home /> },
+          { path: "collection", element: <Collection /> },
           // { path: "home", element: <Home /> }, -> 로그인 후, 사용할 페이지 추가
         ],
       },
@@ -49,5 +51,5 @@ createRoot(document.getElementById("root")!).render(
       <RouterProvider router={router} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
