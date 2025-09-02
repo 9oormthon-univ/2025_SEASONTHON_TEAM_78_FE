@@ -27,12 +27,14 @@ interface ChallengeIconProps {
   name: IconName;
   variant?: IconVariant;
   alt?: string;
+  size?: number;
 }
 
 function ChallengeIcon({
   name,
   variant = "black",
   alt = "",
+  size = 24, //기본 사이즈
 }: ChallengeIconProps) {
   const src = ICONS[name][variant];
 
@@ -40,7 +42,8 @@ function ChallengeIcon({
     <img
       src={src}
       alt={alt}
-      className="w-[clamp(20px,6.5vw,28px)] h-[clamp(20px,6.5vw,28px)]"
+      width={size}
+      height={size}
       loading="lazy"
       decoding="async"
     />
