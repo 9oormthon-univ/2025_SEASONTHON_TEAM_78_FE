@@ -58,6 +58,13 @@ function CollectionPage() {
         ))}
       </div>
 
+      {selectedItem && (
+        <div>
+          <p>{selectedItem.title}</p>
+          <button onClick={() => setSelectedItem(null)}>닫기</button>
+        </div>
+      )}
+
       <BottomNavBar />
     </div>
   );
