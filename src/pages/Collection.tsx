@@ -1,6 +1,7 @@
+import { useState } from "react";
 import TopNavBar from "@/components/Navbar/TopNavBar";
 import BottomNavBar from "@/components/Navbar/BottomNavBar";
-import ChallengeIcon from "@/components/Icon/ChallengeIcon";
+import CollectionCard from "@/components/CollectionPage/CollectionCard";
 
 type IconName = "ball" | "book" | "broom" | "bus" | "edit" | "water";
 
@@ -8,7 +9,7 @@ interface Item {
   id: number | string;
   icon: IconName;
   title: string;
-  endDate: string; // 종료 날짜 (2025. 08. 29)
+  endDate: string;
 }
 
 const ITEMS: Item[] = [
@@ -25,6 +26,8 @@ const ITEMS: Item[] = [
 ];
 
 function CollectionPage() {
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
   return (
     <div className="w-full max-w-[480px] mx-auto">
       <TopNavBar title="컬렉션" />
@@ -45,23 +48,22 @@ function CollectionPage() {
         "
       >
         {ITEMS.map((it) => (
-          <div
+          <CollectionCard
             key={it.id}
-            className="w-full aspect-square rounded-[20px] bg-[#f4f7fb] px-2 py-3
-                       flex flex-col items-center justify-center gap-1.5"
-          >
-            <ChallengeIcon
-              name={it.icon}
-              variant="color"
-              alt={`${it.icon} icon`}
-            />
-            <p className="w-[85%] text-sm font-bold text-center text-black break-words whitespace-normal">
-              {it.title}
-            </p>
-            <p className="text-xs font-medium text-[#93979d]">{it.endDate}</p>
-          </div>
+            icon={it.icon}
+            title={it.title}
+            endDate={it.endDate}
+            onClick={() => setSelectedItem(it)} // 카드 자체 클릭 → 모달 열기
+          />
         ))}
       </div>
+
+      {selectedItem && (
+        <div>
+          <p>{selectedItem.title}</p>
+          <button onClick={() => setSelectedItem(null)}>닫기</button>
+        </div>
+      )}
 
       <BottomNavBar />
     </div>
