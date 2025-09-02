@@ -32,7 +32,7 @@ export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <ul className="space-y-3 w-full px-5 pb-5">
+      <ul className="space-y-3 w-full px-5 pb-20">
         {challenges.map((challenge) => (
           <li
             key={challenge.id}
