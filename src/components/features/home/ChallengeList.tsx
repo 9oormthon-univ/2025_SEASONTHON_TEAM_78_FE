@@ -13,7 +13,7 @@ interface ChallengeListProps {
 export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
   if (challenges.length === 0) {
     return (
-      <div className="min-w-full px-10 min-h-40 flex items-center justify-center bg-white text-center text-gray-500">
+      <div className="h-40 flex items-center justify-center text-center text-gray-500 p-5">
         {tab === "pending" ? (
           <div className="flex flex-col items-center">
             <div>아직 인증할 챌린지가 없습니다.</div>
@@ -31,12 +31,12 @@ export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
   }
 
   return (
-    <div className="mt-5 max-h-58 overflow-y-auto">
-      <ul className="space-y-2 w-full">
+    <div className="h-full overflow-y-auto">
+      <ul className="space-y-3 w-full px-5 pb-5">
         {challenges.map((challenge) => (
           <li
             key={challenge.id}
-            className="flex items-center justify-between rounded-lg bg-white px-4 py-3 mx-8 shadow-sm border border-gray-500"
+            className="flex items-center justify-between rounded-lg bg-white px-4 py-3 mx-3 shadow-sm border border-gray-500"
           >
             <span className="text-gray-800 font-medium">{challenge.title}</span>
             {tab === "pending" ? (

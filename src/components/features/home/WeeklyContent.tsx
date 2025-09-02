@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import WeeklyCalendar from "./WeeklyCalendar";
 import ChallengeToggle from "./ChallengeToggle";
 import ChallengeList from "./ChallengeList";
+import CreateChallengeButton from "./CreateChallengeButton";
 
 interface WeeklyContentProps {
   selectedDate: Date;
@@ -36,6 +37,12 @@ export default function WeeklyContent({
       { id: "p2", title: "산책 20분" },
       { id: "p2", title: "산책 20분" },
       { id: "p2", title: "산책 20분" },
+      { id: "p2", title: "산책 20분" },
+      { id: "p2", title: "산책 20분" },
+      { id: "p2", title: "산책 20분" },
+      { id: "p2", title: "산책 20분" },
+      { id: "p2", title: "산책 20분" },
+      { id: "p2", title: "산책 20분" },
     ];
     const baseDone: Challenge[] = [
       {
@@ -54,14 +61,24 @@ export default function WeeklyContent({
   const currentChallenges = tab === "pending" ? pending : done;
 
   return (
-    <div>
-      <WeeklyCalendar selectedDate={selectedDate} onDateSelect={onDateSelect} />
-      <ChallengeToggle value={tab} onChange={setTab} />
-      {bothEmpty ? (
-        <ChallengeList tab={tab} challenges={[]} />
-      ) : (
-        <ChallengeList tab={tab} challenges={currentChallenges} />
-      )}
+    <div className="flex flex-col h-full">
+      <div className="flex-shrink-0">
+        <WeeklyCalendar
+          selectedDate={selectedDate}
+          onDateSelect={onDateSelect}
+        />
+        <ChallengeToggle value={tab} onChange={setTab} />
+      </div>
+      <div className="flex-1 overflow-hidden">
+        {bothEmpty ? (
+          <ChallengeList tab={tab} challenges={[]} />
+        ) : (
+          <ChallengeList tab={tab} challenges={currentChallenges} />
+        )}
+      </div>
+      <div className="relative">
+        <CreateChallengeButton />
+      </div>
     </div>
   );
 }

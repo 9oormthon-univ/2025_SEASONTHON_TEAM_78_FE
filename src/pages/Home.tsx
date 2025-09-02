@@ -2,7 +2,6 @@ import { useState } from "react";
 import TopNavBar from "@/components/Navbar/TopNavBar";
 import BottomNavBar from "@/components/Navbar/BottomNavBar";
 import WeeklyContent from "@/components/features/home/WeeklyContent";
-import CreateChallengeButton from "@/components/features/home/CreateChallengeButton";
 
 export default function Home() {
   const today = new Date();
@@ -13,14 +12,15 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date>(today);
 
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <TopNavBar title={formattedDate} />
-      <WeeklyContent
-        selectedDate={selectedDate}
-        onDateSelect={setSelectedDate}
-      />
-      <CreateChallengeButton />
+      <div className="flex-1 overflow-hidden">
+        <WeeklyContent
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+        />
+      </div>
       <BottomNavBar />
-    </>
+    </div>
   );
 }
