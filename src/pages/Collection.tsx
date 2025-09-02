@@ -48,18 +48,13 @@ function CollectionPage() {
         "
       >
         {ITEMS.map((it) => (
-          <button
+          <CollectionCard
             key={it.id}
-            type="button"
-            onClick={() => setSelectedItem(it)}
-            className="w-full focus:outline-none"
-          >
-            <CollectionCard
-              icon={it.icon}
-              title={it.title}
-              endDate={it.endDate}
-            />
-          </button>
+            icon={it.icon}
+            title={it.title}
+            endDate={it.endDate}
+            onClick={() => setSelectedItem(it)} // 카드 자체 클릭 → 모달 열기
+          />
         ))}
       </div>
 
