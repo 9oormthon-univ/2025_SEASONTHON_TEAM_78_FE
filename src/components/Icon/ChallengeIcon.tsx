@@ -40,7 +40,7 @@ function ChallengeIcon({
     <img
       src={src}
       alt={alt}
-      className="w-[clamp(26px,6.5vw,32px)] h-[clamp(26px,6.5vw,32px)]"
+      className="w-[clamp(20px,6.5vw,28px)] h-[clamp(20px,6.5vw,28px)]"
       loading="lazy"
       decoding="async"
     />
