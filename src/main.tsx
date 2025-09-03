@@ -15,6 +15,7 @@ import Protected from "@/lib/routes/Protected.tsx";
 import ProfileSelect from "./pages/ProfileSelect.tsx";
 import Collection from "./pages/Collection";
 import Home from "./pages/Home";
+import MyPage from "@/pages/MyPage";
 
 // 라우터 구성
 const router = createBrowserRouter([
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
           { path: "profile-select", element: <ProfileSelect /> },
           { path: "home", element: <Home /> },
           { path: "collection", element: <Collection /> },
+          { path: "my-page", element: <MyPage /> },
         ],
       },
       { path: "*", element: <Navigate to="/" replace /> },
