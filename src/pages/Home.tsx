@@ -1,6 +1,7 @@
+import { useState } from "react";
 import TopNavBar from "@/components/Navbar/TopNavBar";
 import BottomNavBar from "@/components/Navbar/BottomNavBar";
-import WeeklyCalendar from "@/components/features/home/WeeklyCalendar";
+import WeeklyContent from "@/components/features/home/WeeklyContent";
 
 export default function Home() {
   const today = new Date();
@@ -8,11 +9,18 @@ export default function Home() {
   const date = today.getDate();
   const formattedDate = `${month}월 ${date}일`;
 
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <TopNavBar title={formattedDate} />
-      <WeeklyCalendar />
+      <div className="flex-1 overflow-hidden">
+        <WeeklyContent
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+        />
+      </div>
       <BottomNavBar />
-    </>
+    </div>
   );
 }
