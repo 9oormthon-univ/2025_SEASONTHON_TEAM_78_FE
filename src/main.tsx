@@ -16,6 +16,8 @@ import ProfileSelect from "./pages/ProfileSelect.tsx";
 import Collection from "./pages/Collection";
 import Home from "./pages/Home";
 import MyPage from "@/pages/MyPage";
+import CreateChallenge from "./pages/CreateChallenge";
+
 
 // 라우터 구성
 const router = createBrowserRouter([
@@ -32,6 +34,7 @@ const router = createBrowserRouter([
           { path: "home", element: <Home /> },
           { path: "collection", element: <Collection /> },
           { path: "my-page", element: <MyPage /> },
+          { path: "create-challenge", element: <CreateChallenge /> },
         ],
       },
       { path: "*", element: <Navigate to="/" replace /> },
