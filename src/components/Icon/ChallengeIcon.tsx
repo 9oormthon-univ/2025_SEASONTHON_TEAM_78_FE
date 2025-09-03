@@ -10,8 +10,20 @@ import EditBlack from "@/assets/edit-black.svg";
 import EditColor from "@/assets/edit-color.svg";
 import WaterBlack from "@/assets/water-black.svg";
 import WaterColor from "@/assets/water-color.svg";
+import MusicBlack from "@/assets/music-black.svg";
+import MusicColor from "@/assets/music-color.svg";
+import AlarmBlack from "@/assets/alarm-black.svg";
+import AlarmColor from "@/assets/alarm-color.svg";
 
-type IconName = "ball" | "book" | "broom" | "bus" | "edit" | "water";
+type IconName =
+  | "ball"
+  | "book"
+  | "broom"
+  | "bus"
+  | "edit"
+  | "water"
+  | "music"
+  | "alarm";
 type IconVariant = "black" | "color";
 
 const ICONS: Record<IconName, Record<IconVariant, string>> = {
@@ -21,6 +33,8 @@ const ICONS: Record<IconName, Record<IconVariant, string>> = {
   bus: { black: BusBlack, color: BusColor },
   edit: { black: EditBlack, color: EditColor },
   water: { black: WaterBlack, color: WaterColor },
+  music: { black: MusicBlack, color: MusicColor },
+  alarm: { black: AlarmBlack, color: AlarmColor },
 };
 
 interface ChallengeIconProps {

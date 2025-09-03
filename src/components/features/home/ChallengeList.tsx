@@ -1,14 +1,42 @@
+import ChallengeIcon from "@/components/Icon/ChallengeIcon";
+
 type Tab = "pending" | "done";
+
+type IconName =
+  | "ball"
+  | "book"
+  | "broom"
+  | "bus"
+  | "edit"
+  | "water"
+  | "music"
+  | "alarm";
 
 interface Challenge {
   id: string;
   title: string;
+  description: string;
+  icon: IconName;
+  duration: number;
+  createdAt: string;
+  status: "pending" | "done";
 }
 
 interface ChallengeListProps {
   tab: Tab;
   challenges: Challenge[];
 }
+
+const ICON_COLORS: Record<IconName, string> = {
+  ball: "bg-lime-100",
+  book: "bg-pink-100",
+  broom: "bg-orange-100",
+  bus: "bg-blue-100",
+  edit: "bg-yellow-100",
+  water: "bg-cyan-100",
+  music: "bg-purple-100",
+  alarm: "bg-green-100",
+};
 
 export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
   if (challenges.length === 0) {
@@ -32,23 +60,18 @@ export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <ul className="space-y-3 w-full px-5 pb-20">
+      <ul className="space-y-3 w-full px-5 pb-30">
         {challenges.map((challenge) => (
           <li
             key={challenge.id}
-            className="flex items-center justify-between rounded-lg bg-white px-4 py-3 mx-3 shadow-sm border border-gray-500"
+            className={`flex items-center gap-3 rounded-lg px-4 py-3 mx-3 shadow-sm border border-gray-200 ${ICON_COLORS[challenge.icon]}`}
           >
-            <span className="text-gray-800 font-medium">{challenge.title}</span>
-            {tab === "pending" ? (
-              <button
-                type="button"
-                className="rounded-full bg-gradient-to-b from-[#4672FF] to-[#8DB7FF] px-3 py-1 text-white text-xs font-semibold shadow hover:from-[#2B5BFF] hover:to-[#6B9FFF]"
-              >
-                인증하기
-              </button>
-            ) : (
-              <span className="text-xs text-gray-500">완료</span>
-            )}
+            <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm">
+              <ChallengeIcon name={challenge.icon} variant="black" size={20} />
+            </div>
+            <span className="text-gray-800 font-medium flex-1">
+              {challenge.title}
+            </span>
           </li>
         ))}
       </ul>
