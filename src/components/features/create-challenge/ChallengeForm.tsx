@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface ChallengeFormProps {
   title: string;
   description: string;
