@@ -10,14 +10,19 @@ import myDefault from "@/assets/my-default.svg";
 import myPressed from "@/assets/my-pressed.svg";
 
 const items = [
-  { to: "/", defaultIcon: homeDefault, pressedIcon: homePressed, end: true },
+  {
+    to: "/home",
+    defaultIcon: homeDefault,
+    pressedIcon: homePressed,
+    end: true,
+  },
   { to: "/feed", defaultIcon: feedDefault, pressedIcon: feedPressed },
   {
     to: "/collection",
     defaultIcon: collectionDefault,
     pressedIcon: collectionPressed,
   },
-  { to: "/my", defaultIcon: myDefault, pressedIcon: myPressed },
+  { to: "/my-page", defaultIcon: myDefault, pressedIcon: myPressed },
 ];
 
 function BottomNavBar() {
