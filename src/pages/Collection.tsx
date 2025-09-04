@@ -1,9 +1,11 @@
-import { useState } from "react";
-import TopNavBar from "@/components/Navbar/TopNavBar";
-import BottomNavBar from "@/components/Navbar/BottomNavBar";
-import CollectionCard from "@/components/CollectionPage/CollectionCard";
+import { useState } from 'react';
+import TopNavBar from '@/components/Navbar/TopNavBar';
+import BottomNavBar from '@/components/Navbar/BottomNavBar';
+import CollectionCard from '@/components/CollectionPage/CollectionCard';
+import CollectionCardFront from '@/components/CollectionPage/CollectionCardFront';
+import CollectionCardBack from '@/components/CollectionPage/CollectionCardBack';
 
-type IconName = "ball" | "book" | "broom" | "bus" | "edit" | "water";
+type IconName = 'ball' | 'book' | 'broom' | 'bus' | 'edit' | 'water';
 
 interface Item {
   id: number | string;
@@ -13,20 +15,28 @@ interface Item {
 }
 
 const ITEMS: Item[] = [
-  { id: 1, icon: "book", title: "하루 책 한 권 읽기", endDate: "2025. 08. 29" },
+  { id: 1, icon: 'book', title: '하루 책 한 권 읽기', endDate: '2025. 08. 29' },
   {
     id: 2,
-    icon: "water",
-    title: "물 500ml 이상 마시기",
-    endDate: "2025. 08. 20",
+    icon: 'water',
+    title: '물 500ml 이상 마시기',
+    endDate: '2025. 08. 20',
   },
-  { id: 3, icon: "broom", title: "청소하기", endDate: "2025. 08. 29" },
-  { id: 4, icon: "bus", title: "버스 이용하기", endDate: "2025. 08. 20" },
-  { id: 5, icon: "edit", title: "일기 쓰기", endDate: "2025. 08. 29" },
+  { id: 3, icon: 'broom', title: '청소하기', endDate: '2025. 08. 29' },
+  { id: 4, icon: 'bus', title: '버스 이용하기', endDate: '2025. 08. 20' },
+  { id: 5, icon: 'edit', title: '일기 쓰기', endDate: '2025. 08. 29' },
 ];
 
 function CollectionPage() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [isBack, setIsBack] = useState(false); //현재 뒷면 표시여부
+
+  const closeModal = () => {
+    setSelectedItem(null);
+    setIsBack(false); //다음에 열릴때 대비해서 앞면으로 초기화
+  };
+
+  const flip = () => setIsBack((prev) => !prev); //앞뒤전환
 
   return (
     <div className="w-full max-w-[480px] mx-auto">
@@ -53,16 +63,35 @@ function CollectionPage() {
             icon={it.icon}
             title={it.title}
             endDate={it.endDate}
-            onClick={() => setSelectedItem(it)} // 카드 자체 클릭 → 모달 열기
+            onClick={() => {
+              setSelectedItem(it);
+              setIsBack(false);
+            }}
           />
         ))}
       </div>
 
-      {selectedItem && (
-        <div>
-          <p>{selectedItem.title}</p>
-          <button onClick={() => setSelectedItem(null)}>닫기</button>
-        </div>
+      {selectedItem && !isBack && (
+        <CollectionCardFront
+          isOpen={true}
+          onClose={closeModal}
+          title={selectedItem.title}
+          iconName={selectedItem.icon}
+          onFlip={flip}
+        />
+      )}
+      {selectedItem && isBack && (
+        <CollectionCardBack
+          isOpen={true}
+          onClose={closeModal}
+          title={selectedItem.title}
+          iconName={selectedItem.icon}
+          description="오늘의 작은 성공을 기록했어요!"
+          count1={3}
+          count2={7}
+          count3={12}
+          onFlip={flip}
+        />
       )}
 
       <BottomNavBar />

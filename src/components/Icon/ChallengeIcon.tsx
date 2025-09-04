@@ -46,8 +46,8 @@ interface ChallengeIconProps {
 
 function ChallengeIcon({
   name,
-  variant = "black",
-  alt = "",
+  variant = 'black',
+  alt = '',
   size = 24, //기본 사이즈
 }: ChallengeIconProps) {
   const src = ICONS[name][variant];
