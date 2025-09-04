@@ -1,8 +1,17 @@
+import { useState } from 'react';
 import TopNavBar from '@/components/Navbar/TopNavBar';
 import BottomNavBar from '@/components/Navbar/BottomNavBar';
 import FeedCard from '@/components/FeedPage/FeedCard';
+import CheerBottomSheet from '@/components/FeedPage/CheerBottomSheet';
 
 function Feed() {
+  const [isCheerOpen, setCheerOpen] = useState(false);
+
+  const openCheer = () => {
+    setCheerOpen(true);
+    // setActivePostId(해당게시물id);
+  };
+
   return (
     <div>
       <TopNavBar title="피드" />
@@ -10,7 +19,7 @@ function Feed() {
         <FeedCard
           imageUrl="/images/cat1.webp"
           totalCheers={99}
-          onCheer={() => console.log('cheer!')}
+          onCheer={openCheer}
           profileUrl="/images/cat1.webp"
           nickname="미르미"
           challengeTitle="게시물 제목"
@@ -20,7 +29,7 @@ function Feed() {
         <FeedCard
           imageUrl="/images/cat1.webp"
           totalCheers={99}
-          onCheer={() => console.log('cheer!')}
+          onCheer={openCheer}
           profileUrl="/images/cat1.webp"
           nickname="미르미"
           challengeTitle="게시물 제목"
@@ -30,6 +39,16 @@ function Feed() {
       </div>
 
       <BottomNavBar />
+
+      {/* 바텀시트 */}
+      <CheerBottomSheet
+        isOpen={isCheerOpen}
+        onClose={() => setCheerOpen(false)}
+        onSubmit={(stickerId: string) => {
+          //응원하기 API 연동 (activePostId, stickerId)
+          console.log('submit cheer', /* activePostId, */ stickerId);
+        }}
+      />
     </div>
   );
 }
