@@ -1,4 +1,4 @@
-type IconName =
+export type IconName =
   | "ball"
   | "book"
   | "broom"
@@ -7,6 +7,43 @@ type IconName =
   | "water"
   | "music"
   | "alarm";
+
+export const ICON_LIGHT_COLORS: Record<IconName, string> = {
+  ball: "bg-lime-100",
+  book: "bg-pink-100",
+  broom: "bg-orange-100",
+  bus: "bg-blue-100",
+  edit: "bg-yellow-100",
+  water: "bg-cyan-100",
+  music: "bg-purple-100",
+  alarm: "bg-green-100",
+};
+
+export const ICON_COLORS: Record<IconName, string> = {
+  ball: "bg-lime-300",
+  book: "bg-pink-300",
+  broom: "bg-orange-300",
+  bus: "bg-blue-300",
+  edit: "bg-yellow-300",
+  water: "bg-cyan-300",
+  music: "bg-purple-300",
+  alarm: "bg-green-300",
+};
+
+// 아이콘별 실제 색상 코드 (진행률 바용)
+export const ICON_COLOR_CODES: Record<
+  IconName,
+  { icon: string; background: string }
+> = {
+  ball: { icon: "stroke-lime-300", background: "stroke-lime-100" },
+  book: { icon: "stroke-pink-300", background: "stroke-pink-100" },
+  broom: { icon: "stroke-orange-300", background: "stroke-orange-100" },
+  bus: { icon: "stroke-blue-300", background: "stroke-blue-100" },
+  edit: { icon: "stroke-yellow-300", background: "stroke-yellow-100" },
+  water: { icon: "stroke-cyan-300", background: "stroke-cyan-100" },
+  music: { icon: "stroke-purple-300", background: "stroke-purple-100" },
+  alarm: { icon: "stroke-green-300", background: "stroke-green-100" },
+};
 
 export interface ChallengeSuggestion {
   id: string;

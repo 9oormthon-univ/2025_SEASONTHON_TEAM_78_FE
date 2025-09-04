@@ -3,6 +3,7 @@ import WeeklyCalendar from "./WeeklyCalendar";
 import ChallengeToggle from "./ChallengeToggle";
 import ChallengeList from "./ChallengeList";
 import CreateChallengeButton from "./CreateChallengeButton";
+import { type IconName } from "@/types/challenge";
 
 interface WeeklyContentProps {
   selectedDate: Date;
@@ -10,16 +11,6 @@ interface WeeklyContentProps {
 }
 
 type Tab = "pending" | "done";
-
-type IconName =
-  | "ball"
-  | "book"
-  | "broom"
-  | "bus"
-  | "edit"
-  | "water"
-  | "music"
-  | "alarm";
 
 type Challenge = {
   id: string;
@@ -83,7 +74,7 @@ export default function WeeklyContent({
   const currentChallenges = tab === "pending" ? pending : done;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gray-100">
       <div className="flex-shrink-0">
         <WeeklyCalendar
           selectedDate={selectedDate}

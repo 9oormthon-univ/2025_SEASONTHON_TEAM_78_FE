@@ -1,14 +1,5 @@
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-
-type IconName =
-  | "ball"
-  | "book"
-  | "broom"
-  | "bus"
-  | "edit"
-  | "water"
-  | "music"
-  | "alarm";
+import { type IconName, ICON_LIGHT_COLORS } from "@/types/challenge";
 
 interface IconSelectorProps {
   selectedIcon: IconName | null;
@@ -25,17 +16,6 @@ const ICON_OPTIONS: IconName[] = [
   "music",
   "alarm",
 ];
-
-const ICON_COLORS: Record<IconName, string> = {
-  book: "bg-pink-300",
-  edit: "bg-yellow-300",
-  bus: "bg-blue-300",
-  alarm: "bg-green-300",
-  broom: "bg-orange-300",
-  ball: "bg-lime-300",
-  water: "bg-cyan-300",
-  music: "bg-purple-300",
-};
 
 export default function IconSelector({
   selectedIcon,
@@ -57,10 +37,10 @@ export default function IconSelector({
                   ? "border-2 border-[var(--color-primary)] shadow-lg"
                   : "hover:shadow-md"
               }
-              ${ICON_COLORS[iconName]}
+              ${ICON_LIGHT_COLORS[iconName]}
             `}
           >
-            <ChallengeIcon name={iconName} variant="black" size={32} />
+            <ChallengeIcon name={iconName} variant="color" size={32} />
           </button>
         ))}
       </div>

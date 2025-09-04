@@ -2,29 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import {
   CHALLENGE_SUGGESTIONS,
   type ChallengeSuggestion,
+  ICON_LIGHT_COLORS,
 } from "@/types/challenge";
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-
-type IconName =
-  | "ball"
-  | "book"
-  | "broom"
-  | "bus"
-  | "edit"
-  | "water"
-  | "music"
-  | "alarm";
-
-const ICON_COLORS: Record<IconName, string> = {
-  ball: "bg-lime-100 group-hover:bg-lime-200",
-  book: "bg-pink-100 group-hover:bg-pink-200",
-  broom: "bg-orange-100 group-hover:bg-orange-200",
-  bus: "bg-blue-100 group-hover:bg-blue-200",
-  edit: "bg-yellow-100 group-hover:bg-yellow-200",
-  water: "bg-cyan-100 group-hover:bg-cyan-200",
-  music: "bg-purple-100 group-hover:bg-purple-200",
-  alarm: "bg-green-100 group-hover:bg-green-200",
-};
 
 interface ChallengeFormProps {
   title: string;
@@ -63,9 +43,9 @@ export default function ChallengeForm({
       const filtered = CHALLENGE_SUGGESTIONS.filter((suggestion) =>
         suggestion.title.toLowerCase().includes(title.toLowerCase())
       );
-      setFilteredSuggestions(filtered.slice(0, 5)); // 최대 5개만 표시
+      setFilteredSuggestions(filtered.slice(0, 10)); // 최대 5개만 표시
     } else {
-      setFilteredSuggestions(CHALLENGE_SUGGESTIONS.slice(0, 5));
+      setFilteredSuggestions(CHALLENGE_SUGGESTIONS.slice(0, 10));
     }
   }, [title]);
 
@@ -95,18 +75,26 @@ export default function ChallengeForm({
     <div className="space-y-6">
       {/* 제목 입력 */}
       <div className="relative">
-        <label htmlFor="title" className="block font-semibold mb-2">
-          챌린지 제목
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label htmlFor="title" className="block font-semibold">
+            챌린지 제목
+          </label>
+          <span className="text-sm text-gray-500">{title.length}/11</span>
+        </div>
         <div className="relative">
           <input
             ref={inputRef}
             id="title"
             type="text"
             value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 11) {
+                onTitleChange(e.target.value);
+              }
+            }}
             onFocus={() => setShowSuggestions(true)}
             placeholder="챌린지 제목을 입력해 주세요."
+            maxLength={11}
             className={`w-full px-4 py-3 pr-10 rounded-2xl border-2 transition-all duration-200 outline-none
             ${
               title.trim()
@@ -142,7 +130,7 @@ export default function ChallengeForm({
             ref={suggestionsRef}
             className="absolute top-full left-0 right-0 mt-3 z-10"
           >
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 max-h-96 overflow-y-auto">
               <div className="flex items-center justify-between mb-3">
                 <div className="text-sm text-gray-600 font-medium">
                   💡 추천 챌린지
@@ -150,7 +138,8 @@ export default function ChallengeForm({
                 <button
                   type="button"
                   onClick={() => setShowSuggestions(false)}
-                  className="w-6 h-6 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-full flex items-center justify-center transition-colors duration-200"
+                  className="w-6 h-6 bg-gray-200 hover:bg-gray-300 text-gray-600 
+                  rounded-full flex items-center justify-center transition-colors duration-200"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                     <path
@@ -179,11 +168,11 @@ export default function ChallengeForm({
                         {suggestion.title}
                       </span>
                       <div
-                        className={`w-5 h-5 ${ICON_COLORS[suggestion.icon]} rounded-full flex items-center justify-center transition-colors`}
+                        className={`w-5 h-5 ${ICON_LIGHT_COLORS[suggestion.icon]} rounded-full flex items-center justify-center transition-colors`}
                       >
                         <ChallengeIcon
                           name={suggestion.icon}
-                          variant="black"
+                          variant="color"
                           size={12}
                         />
                       </div>
@@ -217,15 +206,23 @@ export default function ChallengeForm({
 
       {/* 설명 입력 */}
       <div>
-        <label htmlFor="description" className="block font-semibold mb-2">
-          챌린지 내용
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label htmlFor="description" className="block font-semibold">
+            챌린지 내용
+          </label>
+          <span className="text-sm text-gray-500">{description.length}/50</span>
+        </div>
         <textarea
           id="description"
           value={description}
-          onChange={(e) => onDescriptionChange(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.length <= 50) {
+              onDescriptionChange(e.target.value);
+            }
+          }}
           placeholder="챌린지에 대한 내용을 입력해 주세요."
           rows={4}
+          maxLength={50}
           className={`w-full px-4 py-3 rounded-2xl border-2 transition-all duration-200 outline-none resize-none
           ${
             description.trim()
