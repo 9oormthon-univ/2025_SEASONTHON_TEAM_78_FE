@@ -1,11 +1,12 @@
-import ChallengeIcon from '@/components/Icon/ChallengeIcon';
+import { useNavigate } from "react-router-dom";
+import ChallengeIcon from "@/components/Icon/ChallengeIcon";
 import {
   type IconName,
   ICON_LIGHT_COLORS,
   ICON_COLOR_CODES,
-} from '@/types/challenge';
+} from "@/types/challenge";
 
-type Tab = 'pending' | 'done';
+type Tab = "pending" | "done";
 
 interface Challenge {
   id: string;
@@ -14,7 +15,7 @@ interface Challenge {
   icon: IconName;
   duration: number;
   createdAt: string;
-  status: 'pending' | 'done';
+  status: "pending" | "done";
   completedDays?: number; // 완료한 일수 (임시)
   totalDays?: number; // 전체 일수 (임시)
 }
@@ -77,11 +78,19 @@ const CircularProgress = ({
   );
 };
 
-export default function ChallengeList({
-  tab,
-  challenges,
-  onChallengeToggle,
-}: ChallengeListProps) {
+export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
+  const navigate = useNavigate();
+
+  // 챌린지 상세 페이지로 이동
+  const handleChallengeClick = (
+    challengeId: string,
+    event: React.MouseEvent
+  ) => {
+    console.log("챌린지 클릭됨:", challengeId);
+    event.stopPropagation();
+    navigate(`/challenge/${challengeId}`);
+  };
+
   // 남은 일자 계산 함수
   const getRemainingDays = (challenge: Challenge) => {
     const startDate = new Date(challenge.createdAt);
@@ -109,7 +118,7 @@ export default function ChallengeList({
   if (challenges.length === 0) {
     return (
       <div className="h-40 flex items-center justify-center text-center text-gray-500 p-5">
-        {tab === 'pending' ? (
+        {tab === "pending" ? (
           <div className="flex flex-col items-center">
             <div>아직 인증할 챌린지가 없습니다.</div>
             <div>
@@ -119,7 +128,7 @@ export default function ChallengeList({
             </div>
           </div>
         ) : (
-          '챌린지 인증을 완료해 보세요!'
+          "챌린지 인증을 완료해 보세요!"
         )}
       </div>
     );
@@ -131,12 +140,8 @@ export default function ChallengeList({
         {challenges.map((challenge) => (
           <li
             key={challenge.id}
-            className={`flex items-center gap-3 rounded-3xl px-4 py-3 mx-3 shadow-sm bg-white ${
-              onChallengeToggle
-                ? 'cursor-pointer hover:shadow-md transition-shadow'
-                : ''
-            }`}
-            onClick={() => onChallengeToggle?.(challenge.id)}
+            className="flex items-center gap-3 rounded-3xl px-4 py-3 mx-3 shadow-sm bg-white cursor-pointer hover:shadow-md transition-shadow"
+            onClick={(event) => handleChallengeClick(challenge.id, event)}
           >
             <div
               className={`w-12 h-12 ${ICON_LIGHT_COLORS[challenge.icon]} rounded-2xl flex items-center justify-center shadow-sm`}
@@ -154,7 +159,7 @@ export default function ChallengeList({
                 <span>
                   {getRemainingDays(challenge) > 0
                     ? `${getRemainingDays(challenge)}일`
-                    : '챌린지 종료'}
+                    : "챌린지 종료"}
                 </span>
               </div>
             </div>
