@@ -47,7 +47,7 @@ export default function Login() {
             }}
           ></div>
           <img
-            src="/images/on-boarding.webp"
+            src="/images/onboarding.webp"
             alt="미니모 환영 이미지"
             className="relative z-10 w-65 h-65 sm:w-90 sm:h-90 object-cover"
           />
