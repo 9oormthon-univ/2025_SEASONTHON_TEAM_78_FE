@@ -33,18 +33,15 @@ function CardModalShell({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* Card */}
       <div
         className={[
-          'relative flex w-[343px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl',
+          'relative flex w-[343px] h-[627px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl',
           bgClass,
           className,
         ].join(' ')}
       >
-        {/* Header */}
         <div className="flex items-center justify-center gap-[42px] p-4">
           <div className="h-6 w-6" />
           <p className="flex-1 text-center text-sm font-semibold text-[#161616]">
@@ -59,7 +56,6 @@ function CardModalShell({
           </button>
         </div>
 
-        {/* Body */}
         <div className="flex flex-col gap-4 px-4 pb-6">{children}</div>
       </div>
     </div>

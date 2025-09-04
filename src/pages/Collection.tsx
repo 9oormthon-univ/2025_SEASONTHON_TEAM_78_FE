@@ -2,7 +2,8 @@ import { useState } from 'react';
 import TopNavBar from '@/components/Navbar/TopNavBar';
 import BottomNavBar from '@/components/Navbar/BottomNavBar';
 import CollectionCard from '@/components/CollectionPage/CollectionCard';
-import CardModalShell from '@/components/common/CardModalShell'; //모달 틀 확인
+import CollectionCardFront from '@/components/CollectionPage/CollectionCardFront';
+import CollectionCardBack from '@/components/CollectionPage/CollectionCardBack';
 
 type IconName = 'ball' | 'book' | 'broom' | 'bus' | 'edit' | 'water';
 
@@ -28,6 +29,19 @@ const ITEMS: Item[] = [
 
 function CollectionPage() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [isBack, setIsBack] = useState(false); //현재 뒷면 표시여부
+
+  const openFront = (it: Item) => {
+    setSelectedItem(it);
+    setIsBack(false);
+  };
+
+  const closeModal = () => {
+    setSelectedItem(null);
+    setIsBack(false); //다음에 열릴때 대비해서 앞면으로 초기화
+  };
+
+  const flip = () => setIsBack((prev) => !prev); //앞뒤전환
 
   return (
     <div className="w-full max-w-[480px] mx-auto">
@@ -54,29 +68,35 @@ function CollectionPage() {
             icon={it.icon}
             title={it.title}
             endDate={it.endDate}
-            onClick={() => setSelectedItem(it)} // 카드 자체 클릭 → 모달 열기
+            onClick={() => {
+              setSelectedItem(it);
+              setIsBack(false);
+            }}
           />
         ))}
       </div>
 
-      {selectedItem && (
-        <CardModalShell
-          isOpen={!!selectedItem}
-          onClose={() => setSelectedItem(null)} // 닫기 버튼/오버레이 → 모달 닫기
-          title={selectedItem.title} // 모달 헤더 제목
-          variant="themed" // 아이콘 색 배경 적용
+      {selectedItem && !isBack && (
+        <CollectionCardFront
+          isOpen={true}
+          onClose={closeModal}
+          title={selectedItem.title}
           iconName={selectedItem.icon}
-        >
-          {/* 모달 안에 들어갈 내용은 여기에서 작성 */}
-          <div className="p-4">
-            <p className="text-sm text-[#2a2c2e]">
-              종료일: {selectedItem.endDate}
-            </p>
-            <p className="mt-2 text-base">
-              여기에 카드 상세 내용이 들어갑니다.
-            </p>
-          </div>
-        </CardModalShell>
+          onFlip={flip}
+        />
+      )}
+      {selectedItem && isBack && (
+        <CollectionCardBack
+          isOpen={true}
+          onClose={closeModal}
+          title={selectedItem.title}
+          iconName={selectedItem.icon}
+          description="오늘의 작은 성공을 기록했어요!"
+          count1={3}
+          count2={7}
+          count3={12}
+          onFlip={flip}
+        />
       )}
 
       <BottomNavBar />
