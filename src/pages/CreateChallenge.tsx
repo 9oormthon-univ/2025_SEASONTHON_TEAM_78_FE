@@ -84,7 +84,7 @@ export default function CreateChallenge() {
       </BoxButtonLarge>
 
       <Toast
-        message="챌린지 추가가 완료됐어요!"
+        message="챌린지 추가가 완료됐어요."
         isVisible={showToast}
         onClose={() => setShowToast(false)}
       />

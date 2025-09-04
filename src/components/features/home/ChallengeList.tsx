@@ -1,11 +1,11 @@
-import ChallengeIcon from "@/components/Icon/ChallengeIcon";
+import ChallengeIcon from '@/components/Icon/ChallengeIcon';
 import {
   type IconName,
   ICON_LIGHT_COLORS,
   ICON_COLOR_CODES,
-} from "@/types/challenge";
+} from '@/types/challenge';
 
-type Tab = "pending" | "done";
+type Tab = 'pending' | 'done';
 
 interface Challenge {
   id: string;
@@ -14,7 +14,7 @@ interface Challenge {
   icon: IconName;
   duration: number;
   createdAt: string;
-  status: "pending" | "done";
+  status: 'pending' | 'done';
   completedDays?: number; // 완료한 일수 (임시)
   totalDays?: number; // 전체 일수 (임시)
 }
@@ -109,7 +109,7 @@ export default function ChallengeList({
   if (challenges.length === 0) {
     return (
       <div className="h-40 flex items-center justify-center text-center text-gray-500 p-5">
-        {tab === "pending" ? (
+        {tab === 'pending' ? (
           <div className="flex flex-col items-center">
             <div>아직 인증할 챌린지가 없습니다.</div>
             <div>
@@ -119,7 +119,7 @@ export default function ChallengeList({
             </div>
           </div>
         ) : (
-          "챌린지 인증을 완료해 보세요!"
+          '챌린지 인증을 완료해 보세요!'
         )}
       </div>
     );
@@ -127,14 +127,14 @@ export default function ChallengeList({
 
   return (
     <div className="h-full overflow-y-auto">
-      <ul className="space-y-3 w-full px-5 pb-30">
+      <ul className="space-y-3 w-[clamp(320px,calc(100vw-32px),420px)]px-5 pb-30">
         {challenges.map((challenge) => (
           <li
             key={challenge.id}
             className={`flex items-center gap-3 rounded-3xl px-4 py-3 mx-3 shadow-sm bg-white ${
               onChallengeToggle
-                ? "cursor-pointer hover:shadow-md transition-shadow"
-                : ""
+                ? 'cursor-pointer hover:shadow-md transition-shadow'
+                : ''
             }`}
             onClick={() => onChallengeToggle?.(challenge.id)}
           >
@@ -154,7 +154,7 @@ export default function ChallengeList({
                 <span>
                   {getRemainingDays(challenge) > 0
                     ? `${getRemainingDays(challenge)}일`
-                    : "챌린지 종료"}
+                    : '챌린지 종료'}
                 </span>
               </div>
             </div>
