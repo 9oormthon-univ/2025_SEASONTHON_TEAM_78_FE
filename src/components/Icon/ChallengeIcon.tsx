@@ -15,7 +15,7 @@ import MusicColor from "@/assets/music-color.svg";
 import AlarmBlack from "@/assets/alarm-black.svg";
 import AlarmColor from "@/assets/alarm-color.svg";
 
-type IconName =
+export type IconName =
   | "ball"
   | "book"
   | "broom"
