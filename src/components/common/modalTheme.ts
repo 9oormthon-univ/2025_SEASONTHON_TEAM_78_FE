@@ -21,4 +21,10 @@ export const MODAL_THEME: Record<IconName, { bg: string }> = {
   edit: {
     bg: 'bg-gradient-to-b from-[#FFD45D] from-25% to-[#FFF9E9] to-130%',
   },
+  music: {
+    bg: 'bg-gradient-to-b from-[#B794F6] from-25% to-[#F3F0FF] to-130%',
+  },
+  alarm: {
+    bg: 'bg-gradient-to-b from-[#68D391] from-25% to-[#F0FFF4] to-130%',
+  },
 };
