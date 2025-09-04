@@ -1,16 +1,15 @@
-import { useMemo, useState, useEffect } from "react";
-import WeeklyCalendar from "./WeeklyCalendar";
-import ChallengeToggle from "./ChallengeToggle";
-import ChallengeList from "./ChallengeList";
-import CreateChallengeButton from "./CreateChallengeButton";
-import { type IconName } from "@/types/challenge";
+import { useMemo, useState, useEffect } from 'react';
+import WeeklyCalendar from './WeeklyCalendar';
+import ChallengeToggle from './ChallengeToggle';
+import ChallengeList from './ChallengeList';
+import { type IconName } from '@/types/challenge';
 
 interface WeeklyContentProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
 }
 
-type Tab = "pending" | "done";
+type Tab = 'pending' | 'done';
 
 type Challenge = {
   id: string;
@@ -19,20 +18,20 @@ type Challenge = {
   icon: IconName;
   duration: number;
   createdAt: string;
-  status: "pending" | "done";
+  status: 'pending' | 'done';
 };
 
 export default function WeeklyContent({
   selectedDate,
   onDateSelect,
 }: WeeklyContentProps) {
-  const [tab, setTab] = useState<Tab>("pending");
+  const [tab, setTab] = useState<Tab>('pending');
   const [challenges, setChallenges] = useState<Challenge[]>([]);
 
   // 로컬 스토리지에서 챌린지 데이터 로드
   useEffect(() => {
     const storedChallenges = JSON.parse(
-      localStorage.getItem("challenges") || "[]"
+      localStorage.getItem('challenges') || '[]'
     );
     setChallenges(storedChallenges);
   }, []);
@@ -41,13 +40,13 @@ export default function WeeklyContent({
   useEffect(() => {
     const handleFocus = () => {
       const storedChallenges = JSON.parse(
-        localStorage.getItem("challenges") || "[]"
+        localStorage.getItem('challenges') || '[]'
       );
       setChallenges(storedChallenges);
     };
 
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
   // 선택된 날짜에 해당하는 챌린지 필터링
@@ -60,9 +59,9 @@ export default function WeeklyContent({
     });
 
     const pendingChallenges = dayChallenges.filter(
-      (c) => c.status === "pending"
+      (c) => c.status === 'pending'
     );
-    const doneChallenges = dayChallenges.filter((c) => c.status === "done");
+    const doneChallenges = dayChallenges.filter((c) => c.status === 'done');
 
     return {
       pending: pendingChallenges,
@@ -71,7 +70,7 @@ export default function WeeklyContent({
   }, [challenges, selectedDate]);
 
   const bothEmpty = pending.length === 0 && done.length === 0;
-  const currentChallenges = tab === "pending" ? pending : done;
+  const currentChallenges = tab === 'pending' ? pending : done;
 
   return (
     <div className="flex flex-col h-full bg-gray-100">
@@ -88,9 +87,6 @@ export default function WeeklyContent({
         ) : (
           <ChallengeList tab={tab} challenges={currentChallenges} />
         )}
-      </div>
-      <div className="relative">
-        <CreateChallengeButton />
       </div>
     </div>
   );
