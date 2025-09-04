@@ -62,10 +62,10 @@ function CollectionCardBack({
         <div
           className="flex cursor-pointer flex-col items-center gap-[26px] px-4 pt-4 pb-[26px]"
           onClick={onFlip}
-          role="button"
           tabIndex={0}
           onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onFlip?.()}
         >
+          {/*  챌린지 첫 인증샷 넣을예정 */}
           <div
             className="
               h-[311px] w-[311px] rounded-[40px] p-6
@@ -77,13 +77,12 @@ function CollectionCardBack({
 
           <div className="flex w-[311px] flex-col items-center gap-2">
             <p className="text-xl font-bold text-[#161616]">{title}</p>
-            {description && (
-              <p className="w-[311px] text-center text-sm text-[#393a3d]">
-                {description}
-              </p>
-            )}
+            <p className="w-[311px] text-center text-sm text-[#393a3d]">
+              {description}
+            </p>
           </div>
 
+          {/* 이모티콘 만들어지면 수정하기 */}
           <div className="flex items-center justify-center gap-[42px]">
             <div className="flex w-12 flex-col items-center gap-1.5">
               <img src={HeartIcon} alt="heart" className="h-12 w-12" />
