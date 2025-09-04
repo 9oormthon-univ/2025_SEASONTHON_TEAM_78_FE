@@ -13,7 +13,7 @@ export default function ChallengeToggle({
 }: ChallengeToggleProps) {
   return (
     <div
-      className={`grid grid-cols-2 p-1 rounded-full bg-gray-100 mb-5
+      className={`grid grid-cols-2 p-1 rounded-full bg-gray-200 mb-5
         shadow-sm border border-gray-200 mx-16 ${className}`}
       role="tablist"
       aria-label="챌린지 인증 상태 전환"

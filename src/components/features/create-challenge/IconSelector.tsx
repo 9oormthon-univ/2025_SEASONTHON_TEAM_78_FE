@@ -1,6 +1,5 @@
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-
-type IconName = "ball" | "book" | "broom" | "bus" | "edit" | "water";
+import { type IconName, ICON_LIGHT_COLORS } from "@/types/challenge";
 
 interface IconSelectorProps {
   selectedIcon: IconName | null;
@@ -14,16 +13,9 @@ const ICON_OPTIONS: IconName[] = [
   "bus",
   "edit",
   "water",
+  "music",
+  "alarm",
 ];
-
-const ICON_COLORS: Record<IconName, string> = {
-  ball: "bg-green-100",
-  book: "bg-pink-100",
-  broom: "bg-orange-100",
-  bus: "bg-blue-100",
-  edit: "bg-yellow-100",
-  water: "bg-cyan-100",
-};
 
 export default function IconSelector({
   selectedIcon,
@@ -31,32 +23,24 @@ export default function IconSelector({
 }: IconSelectorProps) {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-800">아이콘 선택</h3>
-      <div className="grid grid-cols-3 gap-4">
+      <label className="block font-semibold mb-2">아이콘 선택</label>
+      <div className="grid grid-cols-4 gap-3 justify-items-center">
         {ICON_OPTIONS.map((iconName) => (
           <button
             key={iconName}
             type="button"
             onClick={() => onIconSelect(iconName)}
             className={`
-              p-4 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center gap-3
+              h-16 w-16 rounded-2xl flex flex-col items-center justify-center
               ${
                 selectedIcon === iconName
-                  ? "border-[var(--color-primary)] shadow-lg scale-105"
-                  : "border-gray-200 hover:border-gray-300 hover:shadow-md"
+                  ? "border-2 border-[var(--color-primary)] shadow-lg"
+                  : "hover:shadow-md"
               }
-              ${ICON_COLORS[iconName]}
+              ${ICON_LIGHT_COLORS[iconName]}
             `}
           >
-            <div className="p-2 rounded-full bg-white/80 shadow-sm">
-              <ChallengeIcon
-                name={iconName}
-                variant={selectedIcon === iconName ? "color" : "black"}
-              />
-            </div>
-            <span className="text-xs text-gray-700 capitalize font-medium">
-              {iconName}
-            </span>
+            <ChallengeIcon name={iconName} variant="color" size={32} />
           </button>
         ))}
       </div>
