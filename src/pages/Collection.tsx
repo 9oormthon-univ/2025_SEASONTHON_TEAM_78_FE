@@ -31,11 +31,6 @@ function CollectionPage() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isBack, setIsBack] = useState(false); //현재 뒷면 표시여부
 
-  const openFront = (it: Item) => {
-    setSelectedItem(it);
-    setIsBack(false);
-  };
-
   const closeModal = () => {
     setSelectedItem(null);
     setIsBack(false); //다음에 열릴때 대비해서 앞면으로 초기화
