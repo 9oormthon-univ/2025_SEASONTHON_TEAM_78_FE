@@ -7,10 +7,10 @@ export const MODAL_THEME: Record<IconName, { bg: string }> = {
     bg: 'bg-gradient-to-b from-[#FF9CD4] from-25% to-[#FFEEF6] to-130%',
   },
   water: {
-    bg: 'bg-gradient-to-b from-[#36E4E4] from-25% to-[#E5FFFF] to-130%',
+    bg: 'bg-gradient-to-b from-[#36E4E4] from-25% to-[#DEFFFF] to-130%',
   },
   ball: {
-    bg: 'bg-gradient-to-b from-[#D0EA23] from-25% to-[#FCFFE5] to-130%',
+    bg: 'bg-gradient-to-b from-[#FF6C6C] from-25% to-[#FFCBCB] to-130%',
   },
   broom: {
     bg: 'bg-gradient-to-b from-[#FF9A6F] from-25% to-[#FFF2EC] to-130%',
@@ -19,12 +19,12 @@ export const MODAL_THEME: Record<IconName, { bg: string }> = {
     bg: 'bg-gradient-to-b from-[#77BBFF] from-25% to-[#EAF5FF] to-130%',
   },
   edit: {
-    bg: 'bg-gradient-to-b from-[#FFD45D] from-25% to-[#FFF9E9] to-130%',
+    bg: 'bg-gradient-to-b from-[#FFD45D] from-25% to-[#FFF5DA] to-130%',
   },
   music: {
-    bg: 'bg-gradient-to-b from-[#B794F6] from-25% to-[#F3F0FF] to-130%',
+    bg: 'bg-gradient-to-b from-[#E28DFF] from-25% to-[#F4D5FF] to-130%',
   },
   alarm: {
-    bg: 'bg-gradient-to-b from-[#68D391] from-25% to-[#F0FFF4] to-130%',
+    bg: 'bg-gradient-to-b from-[#8DED60] from-25% to-[#E1FFD3] to-130%',
   },
 };

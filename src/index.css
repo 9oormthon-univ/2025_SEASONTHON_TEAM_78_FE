@@ -1,40 +1,40 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @font-face {
-  font-family: "Pretendard";
+  font-family: 'Pretendard';
   font-weight: 400;
   font-display: swap;
   src:
-    local("Pretendard Regular"),
-    url("/fonts/Pretendard-Regular.woff2") format("woff2"),
-    url("/fonts/Pretendard-Regular.woff") format("woff");
+    local('Pretendard Regular'),
+    url('/fonts/Pretendard-Regular.woff2') format('woff2'),
+    url('/fonts/Pretendard-Regular.woff') format('woff');
 }
 @font-face {
-  font-family: "Pretendard";
+  font-family: 'Pretendard';
   font-weight: 500;
   font-display: swap;
   src:
-    local("Pretendard Medium"),
-    url("/fonts/Pretendard-Medium.woff2") format("woff2"),
-    url("/fonts/Pretendard-Medium.woff") format("woff");
+    local('Pretendard Medium'),
+    url('/fonts/Pretendard-Medium.woff2') format('woff2'),
+    url('/fonts/Pretendard-Medium.woff') format('woff');
 }
 @font-face {
-  font-family: "Pretendard";
+  font-family: 'Pretendard';
   font-weight: 600;
   font-display: swap;
   src:
-    local("Pretendard SemiBold"),
-    url("/fonts/Pretendard-SemiBold.woff2") format("woff2"),
-    url("/fonts/Pretendard-SemiBold.woff") format("woff");
+    local('Pretendard SemiBold'),
+    url('/fonts/Pretendard-SemiBold.woff2') format('woff2'),
+    url('/fonts/Pretendard-SemiBold.woff') format('woff');
 }
 @font-face {
-  font-family: "Pretendard";
+  font-family: 'Pretendard';
   font-weight: 700;
   font-display: swap;
   src:
-    local("Pretendard Bold"),
-    url("/fonts/Pretendard-Bold.woff2") format("woff2"),
-    url("/fonts/Pretendard-Bold.woff") format("woff");
+    local('Pretendard Bold'),
+    url('/fonts/Pretendard-Bold.woff2') format('woff2'),
+    url('/fonts/Pretendard-Bold.woff') format('woff');
 }
 
 @theme {
@@ -43,9 +43,9 @@
   --color-primary-tertiary: #cde5ff;
 
   --font-sans:
-    "Pretendard", "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
+    'Pretendard', 'Noto Sans KR', ui-sans-serif, system-ui, sans-serif;
 
-  --font-dunkel: "dunkel-sans-expanded", sans-serif;
+  --font-dunkel: 'dunkel-sans-expanded', sans-serif;
 }
 
 @layer base {
@@ -54,4 +54,11 @@
   #root {
     height: 100%;
   }
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
