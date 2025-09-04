@@ -91,9 +91,11 @@ function FeedCard({
         <button
           type="button"
           onClick={onClickContent}
-          className="block w-full text-left text-[14px] leading-5 text-white line-clamp-2"
+          className="block w-full text-left "
         >
-          {content}
+          <span className="text-[14px] leading-5 text-white clamp-2">
+            {content}
+          </span>
         </button>
       </div>
     </article>
