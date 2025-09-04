@@ -71,7 +71,7 @@ function BottomNavBar() {
 
         {/* 챌린지 추가 버튼 */}
         <NavLink
-          to="/challenge/new" //경로 수정하기
+          to="/create-challenge" //경로 수정하기
           className={({ isActive }) =>
             [
               'flex items-center justify-center',
