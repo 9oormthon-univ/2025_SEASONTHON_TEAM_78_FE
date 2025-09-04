@@ -50,7 +50,6 @@ function BottomNavBar() {
                 <>
                   {isActive && (
                     <span
-                      aria-hidden
                       className="absolute inset-0 -z-10 rounded-[30px] pointer-events-none"
                       style={{
                         background:
@@ -94,7 +93,6 @@ function BottomNavBar() {
                   ].join(' '),
             ].join(' ')
           }
-          aria-label="챌린지 추가"
         >
           <img
             src={plusIcon}
@@ -113,7 +111,6 @@ function BottomNavBar() {
                 <>
                   {isActive && (
                     <span
-                      aria-hidden
                       className="absolute inset-0 -z-10 rounded-[30px] pointer-events-none"
                       style={{
                         background:
