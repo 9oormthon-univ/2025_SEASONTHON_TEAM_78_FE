@@ -1,7 +1,7 @@
-import ChallengeIcon from "@/components/Icon/ChallengeIcon";
+import ChallengeIcon, { type IconName } from "@/components/Icon/ChallengeIcon";
 
 interface CollectionCardProps {
-  icon: "ball" | "book" | "broom" | "bus" | "edit" | "water";
+  icon: IconName;
   title: string;
   endDate: string;
   onClick?: () => void;
