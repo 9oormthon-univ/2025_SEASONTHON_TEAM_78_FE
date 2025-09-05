@@ -1,7 +1,9 @@
-import CloseIcon from '@/assets/close.svg';
-import HeartIcon from '@/assets/heart.svg'; //
-import { MODAL_THEME } from '@/components/common/modalTheme';
-import type { IconName } from '@/components/Icon/ChallengeIcon';
+import CloseIcon from "@/assets/close.svg";
+import { MODAL_THEME } from "@/components/common/modalTheme";
+import type { IconName } from "@/components/Icon/ChallengeIcon";
+import Wow from "@/assets/wow.svg";
+import Cool from "@/assets/cool.svg";
+import Heart from "@/assets/heart.svg";
 
 interface CollectionCardBackProps {
   isOpen: boolean;
@@ -20,7 +22,7 @@ function CollectionCardBack({
   onClose,
   title,
   iconName,
-  description = '',
+  description = "",
   count1 = 0,
   count2 = 0,
   count3 = 0,
@@ -41,9 +43,9 @@ function CollectionCardBack({
 
       <div
         className={[
-          'relative flex w-[343px] h-[627px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl',
+          "relative flex w-[343px] h-[627px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl",
           bgClass,
-        ].join(' ')}
+        ].join(" ")}
       >
         <div className="flex items-center justify-center gap-[42px] p-4">
           <div className="h-6 w-6" />
@@ -63,7 +65,7 @@ function CollectionCardBack({
           className="flex cursor-pointer flex-col items-center gap-[26px] px-4 pt-4 pb-[26px]"
           onClick={onFlip}
           tabIndex={0}
-          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onFlip?.()}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onFlip?.()}
         >
           {/*  챌린지 첫 인증샷 넣을예정 */}
           <div
@@ -82,18 +84,17 @@ function CollectionCardBack({
             </p>
           </div>
 
-          {/* 이모티콘 만들어지면 수정하기 */}
           <div className="flex items-center justify-center gap-[42px]">
             <div className="flex w-12 flex-col items-center gap-1.5">
-              <img src={HeartIcon} alt="heart" className="h-12 w-12" />
+              <img src={Wow} alt="wow" className="h-12 w-12" />
               <p className="text-sm font-semibold text-black">{count1}개</p>
             </div>
             <div className="flex w-12 flex-col items-center gap-1.5">
-              <img src={HeartIcon} alt="heart" className="h-12 w-12" />
+              <img src={Cool} alt="cool" className="h-12 w-12" />
               <p className="text-sm font-semibold text-black">{count2}개</p>
             </div>
             <div className="flex w-12 flex-col items-center gap-1.5">
-              <img src={HeartIcon} alt="heart" className="h-12 w-12" />
+              <img src={Heart} alt="heart" className="h-12 w-12" />
               <p className="text-sm font-semibold text-black">{count3}개</p>
             </div>
           </div>

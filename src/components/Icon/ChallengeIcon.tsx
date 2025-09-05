@@ -14,6 +14,14 @@ import MusicBlack from "@/assets/music-black.svg";
 import MusicColor from "@/assets/music-color.svg";
 import AlarmBlack from "@/assets/alarm-black.svg";
 import AlarmColor from "@/assets/alarm-color.svg";
+import BoxBlack from "@/assets/box-black.svg";
+import BoxColor from "@/assets/box-color.svg";
+import CookBlack from "@/assets/cook-black.svg";
+import CookColor from "@/assets/cook-color.svg";
+import MoonBlack from "@/assets/moon-black.svg";
+import MoonColor from "@/assets/moon-color.svg";
+import RunBlack from "@/assets/run-black.svg";
+import RunColor from "@/assets/run-color.svg";
 
 export type IconName =
   | "ball"
@@ -23,7 +31,11 @@ export type IconName =
   | "edit"
   | "water"
   | "music"
-  | "alarm";
+  | "alarm"
+  | "box"
+  | "cook"
+  | "moon"
+  | "run";
 type IconVariant = "black" | "color";
 
 const ICONS: Record<IconName, Record<IconVariant, string>> = {
@@ -35,6 +47,10 @@ const ICONS: Record<IconName, Record<IconVariant, string>> = {
   water: { black: WaterBlack, color: WaterColor },
   music: { black: MusicBlack, color: MusicColor },
   alarm: { black: AlarmBlack, color: AlarmColor },
+  box: { black: BoxBlack, color: BoxColor },
+  cook: { black: CookBlack, color: CookColor },
+  moon: { black: MoonBlack, color: MoonColor },
+  run: { black: RunBlack, color: RunColor },
 };
 
 interface ChallengeIconProps {
@@ -46,8 +62,8 @@ interface ChallengeIconProps {
 
 function ChallengeIcon({
   name,
-  variant = 'black',
-  alt = '',
+  variant = "black",
+  alt = "",
   size = 24, //기본 사이즈
 }: ChallengeIconProps) {
   const src = ICONS[name][variant];
