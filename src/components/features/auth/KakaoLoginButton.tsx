@@ -10,7 +10,7 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
   const handleLogin = () => {
     const apiBase = import.meta.env.VITE_API_BASE_URL; // ex) http://localhost:8080
     const redirect = import.meta.env.VITE_REDIRECT_URI; // ex) http://localhost:5173/oauth2/callback
-    const provider = "kakao"; // 카카오 OAuth2 프로바이더
+    const provider = "kakao";
 
     // 필수 값 검증
     if (!apiBase || !redirect) {
@@ -24,6 +24,11 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
       `?redirect_uri=${encodeURIComponent(redirect)}`;
 
     console.log("➡️ Redirect to:", loginUrl);
+
+    if (onSuccess) {
+      console.log("onSuccess 콜백이 등록되었습니다.");
+    }
+
     window.location.assign(loginUrl); // 실제 이동
   };
 

@@ -44,7 +44,7 @@ export const api = {
   },
 
   // POST 요청
-  post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",
@@ -53,7 +53,7 @@ export const api = {
   },
 
   // PUT 요청
-  put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "PUT",
