@@ -37,6 +37,7 @@ const router = createBrowserRouter([
           { path: "home", element: <Home /> },
           { path: "collection", element: <Collection /> },
           { path: "my-page", element: <MyPage /> },
+          { path: "/my/profile", element: <EditProfile /> },
           { path: "create-challenge", element: <CreateChallenge /> },
           { path: "challenge/:id", element: <ChallengeDetail /> },
           { path: "challenge/:id/today", element: <TodayChallenge /> },
