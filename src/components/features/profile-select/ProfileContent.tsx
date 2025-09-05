@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import BoxButtonLarge from '@/components/common/BoxButtonLarge';
+import { useState } from "react";
 
 interface ImageOption {
   id: number;
@@ -8,57 +7,52 @@ interface ImageOption {
   imgClass?: string;
 }
 
-interface ProfileSelectContentProps {
+interface ProfileContentProps {
   nickname: string;
-  onNext: (selectedImage: ImageOption | null) => void;
+  onImageSelect: (imageInfo: ImageOption | null) => void;
 }
 
-export default function ProfileSelectContent({
+export default function ProfileContent({
   nickname,
-  onNext,
-}: ProfileSelectContentProps) {
+  onImageSelect,
+}: ProfileContentProps) {
   const [selectedImage, setSelectedImage] = useState<ImageOption | null>(null);
 
-  // 3개의 프로필 이미지 옵션
   const profileOptions: ImageOption[] = [
     {
       id: 1,
-      src: '/images/emoji-wow.webp',
-      alt: '프로필 이모지1',
-      imgClass: 'rounded-full',
+      src: "/images/emoji-wow.webp",
+      alt: "프로필 이모지1",
+      imgClass: "rounded-full",
     },
     {
       id: 2,
-      src: '/images/emoji-cool.webp',
-      alt: '프로필 이모지2',
-      imgClass: 'rounded-full',
+      src: "/images/emoji-cool.webp",
+      alt: "프로필 이모지2",
+      imgClass: "rounded-full",
     },
     {
       id: 3,
-      src: '/images/emoji-heart.webp',
-      alt: '프로필 이모지3',
-      imgClass: 'rounded-full',
+      src: "/images/emoji-heart.webp",
+      alt: "프로필 이모지3",
+      imgClass: "rounded-full",
     },
   ];
 
   const handleSelect = (imageInfo: ImageOption) => {
     setSelectedImage(imageInfo);
-    console.log('선택된 프로필:', imageInfo);
-  };
-
-  const handleNext = () => {
-    onNext(selectedImage);
+    onImageSelect(imageInfo);
+    console.log("선택된 프로필:", imageInfo);
   };
 
   return (
-    <div className="flex flex-col min-h-dvh pb-30 pt-15 px-10 items-center justify-center">
+    <>
       <div className="flex flex-col mt-10 items-center justify-center">
         <p className="text-2xl font-semibold">
-          {nickname ? `반가워요 ${nickname}님!` : '반갑습니다.'}
+          {nickname ? `반가워요 ${nickname}님!` : "반갑습니다."}
         </p>
         <p className="text-2xl font-semibold">사용하실 프로필을 골라주세요.</p>
       </div>
-
       {/* 중앙에 선택된 이미지 표시 */}
       <div className="flex flex-col items-center gap-5 my-8">
         {selectedImage ? (
@@ -86,8 +80,8 @@ export default function ProfileSelectContent({
             onClick={() => handleSelect(option)}
             className={`w-20 h-20 rounded-full overflow-hidden bg-gray-100 transition-all duration-200 ${
               selectedImage?.id === option.id
-                ? 'shadow-lg scale-110'
-                : 'hover:scale-105'
+                ? "shadow-lg scale-110"
+                : "hover:scale-105"
             }`}
             aria-label={option.alt}
           >
@@ -99,11 +93,6 @@ export default function ProfileSelectContent({
           </button>
         ))}
       </div>
-
-      {/* 하단 버튼 */}
-      <BoxButtonLarge disabled={selectedImage === null} onClick={handleNext}>
-        다음
-      </BoxButtonLarge>
-    </div>
+    </>
   );
 }

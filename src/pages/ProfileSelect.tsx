@@ -1,6 +1,8 @@
-import { useMe } from '@/hooks/useMe';
-import { useNavigate } from 'react-router-dom';
-import ProfileSelectContent from '@/components/features/profile-select/ProfileSelectContent';
+import { useState } from "react";
+import { useMe } from "@/hooks/useMe";
+import { useNavigate } from "react-router-dom";
+import ProfileContent from "@/components/features/profile-select/ProfileContent";
+import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 
 interface ImageOption {
   id: number;
@@ -12,14 +14,26 @@ interface ImageOption {
 export default function ProfileSelect() {
   const { data } = useMe();
   const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState<ImageOption | null>(null);
 
-  const nickname = data?.properties?.nickname ?? '';
+  const nickname = data?.properties?.nickname ?? "";
 
-  const handleNext = (selectedImage: ImageOption | null) => {
+  const handleImageSelect = (imageInfo: ImageOption | null) => {
+    setSelectedImage(imageInfo);
+  };
+
+  const handleNext = () => {
     if (selectedImage !== null) {
-      navigate('/home');
+      navigate("/home");
     }
   };
 
-  return <ProfileSelectContent nickname={nickname} onNext={handleNext} />;
+  return (
+    <div className="flex flex-col min-h-dvh pb-30 pt-15 px-10 items-center justify-center">
+      <ProfileContent nickname={nickname} onImageSelect={handleImageSelect} />
+      <BoxButtonLarge disabled={selectedImage === null} onClick={handleNext}>
+        다음
+      </BoxButtonLarge>
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { kakaoPopupLogin } from '@/lib/api/kakao.ts';
+import { useState } from "react";
+import { kakaoPopupLogin } from "@/lib/api/kakao.ts";
 
 interface Props {
   onSuccess?: (accessToken: string) => void;
@@ -14,7 +14,7 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
       const at = await kakaoPopupLogin();
       if (onSuccess) onSuccess(at);
     } catch (e) {
-      alert('카카오 로그인 실패');
+      alert("카카오 로그인 실패");
       console.error(e);
     } finally {
       setLoading(false);
@@ -23,7 +23,7 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
 
   return (
     <div
-      className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+30px)] 
+      className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom)+16px)] 
   w-[clamp(320px,calc(100vw),478px)] px-6"
     >
       <button
@@ -40,7 +40,7 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
             alt="카카오 로그인 버튼"
             className="w-5 h-5"
           />
-          {loading ? '로그인 중…' : '카카오로 로그인하기'}
+          {loading ? "로그인 중…" : "카카오로 로그인하기"}
         </div>
       </button>
     </div>

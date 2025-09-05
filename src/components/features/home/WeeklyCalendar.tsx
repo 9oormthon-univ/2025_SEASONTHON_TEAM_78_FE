@@ -109,9 +109,9 @@ export default function WeeklyCalendar({
                       isSelected
                         ? "bg-stone-800 text-white shadow"
                         : completedIcons.length > 0
-                          ? "bg-gradient-to-b from-blue-50 to-blue-100"
+                          ? "bg-gradient-to-b from-[#F4F7FB] to-[#CBE2FF]"
                           : isToday
-                            ? "ring-1 ring-gray-800 hover:bg-gray-100"
+                            ? "ring-1 ring-gray-800 hover:bg-blue-50"
                             : isCurrentMonth
                               ? "text-gray-800 hover:bg-blue-50"
                               : "text-gray-400 hover:bg-blue-50"

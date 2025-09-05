@@ -1,10 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-import {
-  type IconName,
-  ICON_LIGHT_COLORS,
-  ICON_COLOR_CODES,
-} from "@/types/challenge";
+import { type IconName, ICON_LIGHT_COLORS } from "@/types/challenge";
+import CircularProgress from "@/components/common/CircularProgress";
 
 type Tab = "pending" | "done";
 
@@ -25,58 +22,6 @@ interface ChallengeListProps {
   challenges: Challenge[];
   onChallengeToggle?: (challengeId: string) => void;
 }
-
-// 원형 진행률 바 컴포넌트
-const CircularProgress = ({
-  completed,
-  total,
-  iconName,
-}: {
-  completed: number;
-  total: number;
-  iconName: IconName;
-}) => {
-  const size = 50;
-  const strokeWidth = 10;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-  return (
-    <div className="relative w-[50px] h-[50px]">
-      <svg width={size} height={size} className="transform -rotate-90">
-        {/* 배경 원 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          className={ICON_COLOR_CODES[iconName].background}
-          strokeWidth={strokeWidth}
-          fill="none"
-        />
-        {/* 진행률 원 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          className={`${ICON_COLOR_CODES[iconName].icon} transition-all duration-300`}
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="butt"
-        />
-      </svg>
-      {/* 중앙 텍스트 */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[9px] font-semibold text-gray-500">
-          {completed}/{total}
-        </span>
-      </div>
-    </div>
-  );
-};
 
 export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
   const navigate = useNavigate();
@@ -165,9 +110,10 @@ export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
             </div>
             {/* 원형 진행률 바 */}
             <CircularProgress
-              completed={getProgressData(challenge).completedDays}
-              total={getProgressData(challenge).totalDays}
+              completedDays={getProgressData(challenge).completedDays}
+              totalDays={getProgressData(challenge).totalDays}
               iconName={challenge.icon}
+              showPercentage={true}
             />
           </li>
         ))}
