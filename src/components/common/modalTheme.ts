@@ -40,7 +40,7 @@ export const MODAL_THEME: Record<IconName, { bg: string; graphic: string }> = {
     graphic: "/images/card-box.webp",
   },
   cook: {
-    bg: "bg-gradient-to-b from-[#8DED60] from-25% to-[#E1FFD3] to-130%",
+    bg: "bg-gradient-to-b from-[#8DED60] from-25% to-[#E1FFD3] to-130%", //색 바뀌면 수정
     graphic: "/images/card-cook.webp",
   },
   moon: {
