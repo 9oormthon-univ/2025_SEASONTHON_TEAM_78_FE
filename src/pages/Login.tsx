@@ -1,6 +1,6 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import KakaoLoginButton from '@/components/features/auth/KakaoLoginButton';
+import { useNavigate, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import KakaoLoginButton from "@/components/features/auth/KakaoLoginButton";
 
 interface LocationState {
   from?: {
@@ -12,12 +12,12 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const qc = useQueryClient();
-  const from = (location.state as LocationState)?.from?.pathname || '/';
+  const from = (location.state as LocationState)?.from?.pathname || "/";
 
   const handleSuccess = async (at: string) => {
-    console.log('[login] accessToken:', at);
+    console.log("[login] accessToken:", at);
 
-    await qc.invalidateQueries({ queryKey: ['me'] });
+    await qc.invalidateQueries({ queryKey: ["me"] });
     navigate(from, { replace: true });
   };
 
@@ -43,7 +43,7 @@ export default function Login() {
             w-90 h-90 rounded-full blur-2xl"
             style={{
               background:
-                'radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(59, 130, 246, 0.05) 100%)',
+                "radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(59, 130, 246, 0.05) 100%)",
             }}
           ></div>
           <img
@@ -55,7 +55,7 @@ export default function Login() {
       </div>
 
       {/* 하단 버튼 */}
-      <div className="flex justify-center pb-8 flex-shrink-0">
+      <div className="flex justify-center p-6 flex-shrink-0">
         <KakaoLoginButton onSuccess={handleSuccess} />
       </div>
     </div>
