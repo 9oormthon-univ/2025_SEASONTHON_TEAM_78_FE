@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { kakaoPopupLogin } from "@/lib/api/kakao.ts";
 
 interface Props {
   onSuccess?: (accessToken: string) => void;
@@ -8,11 +7,30 @@ interface Props {
 export default function KakaoLoginButton({ onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
 
+  const handleLogin = () => {
+    const apiBase = import.meta.env.VITE_API_BASE_URL; // ex) http://localhost:8080
+    const redirect = import.meta.env.VITE_REDIRECT_URI; // ex) http://localhost:5173/oauth2/callback
+    const provider = "kakao"; // 카카오 OAuth2 프로바이더
+
+    // 필수 값 검증
+    if (!apiBase || !redirect) {
+      alert("API_BASE_URL 혹은 REDIRECT_URI 환경변수가 설정되지 않았습니다.");
+      return;
+    }
+
+    // 최종 인가 URL: /oauth2/authorization/{provider}?redirect_uri={redirect}
+    const loginUrl =
+      `${apiBase}/oauth2/authorization/${provider}` +
+      `?redirect_uri=${encodeURIComponent(redirect)}`;
+
+    console.log("➡️ Redirect to:", loginUrl);
+    window.location.assign(loginUrl); // 실제 이동
+  };
+
   const onClick = async () => {
     try {
       setLoading(true);
-      const at = await kakaoPopupLogin();
-      if (onSuccess) onSuccess(at);
+      handleLogin();
     } catch (e) {
       alert("카카오 로그인 실패");
       console.error(e);

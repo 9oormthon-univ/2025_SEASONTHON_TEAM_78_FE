@@ -1,13 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchKakaoMe } from "@/lib/api/kakao.ts";
+import { getUserProfile } from "@/lib/api/user";
 
 export function useMe() {
   return useQuery({
     queryKey: ["me"],
-    queryFn: async () => {
-      return await fetchKakaoMe();
-    },
-    retry: 0,
-    staleTime: 60_000,
+    queryFn: getUserProfile,
   });
 }

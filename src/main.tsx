@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
 import App from "./App";
 import Login from "./pages/Login.tsx";
+import OAuthCallback from "./pages/OAuthCallback.tsx";
 import Protected from "@/lib/routes/Protected.tsx";
 import ProfileSelect from "./pages/ProfileSelect.tsx";
 import Collection from "./pages/Collection";
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "login", element: <Login /> },
+      { path: "login/oauth2/code/kakao", element: <OAuthCallback /> },
       {
         element: <Protected />,
         children: [
