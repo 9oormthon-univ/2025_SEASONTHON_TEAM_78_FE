@@ -1,5 +1,14 @@
 // 로컬 스토리지 관리 유틸리티
 
+interface Certification {
+  id: string;
+  challengeId: string;
+  title: string;
+  content: string;
+  image: string;
+  createdAt: string;
+}
+
 export const clearOldCertifications = () => {
   try {
     const certifications = JSON.parse(
@@ -9,7 +18,7 @@ export const clearOldCertifications = () => {
     // 최근 30개만 유지하고 나머지 삭제
     const recentCertifications = certifications
       .sort(
-        (a: any, b: any) =>
+        (a: Certification, b: Certification) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )
       .slice(0, 30);
@@ -33,8 +42,8 @@ export const clearOldCertifications = () => {
 
 export const getStorageSize = () => {
   let total = 0;
-  for (let key in localStorage) {
-    if (localStorage.hasOwnProperty(key)) {
+  for (const key in localStorage) {
+    if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
       total += localStorage[key].length + key.length;
     }
   }
