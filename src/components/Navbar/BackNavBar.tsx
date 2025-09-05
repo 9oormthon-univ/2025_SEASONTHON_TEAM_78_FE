@@ -30,7 +30,7 @@ const BackHeader = ({
   };
 
   return (
-    <div className="sticky top-0 flex items-center justify-between p-3 px-5 bg-[#F8F8F8] z-50">
+    <div className="sticky top-0 flex items-center justify-between p-3 px-5 z-50">
       <button
         type="button"
         onClick={handleClickBack}
