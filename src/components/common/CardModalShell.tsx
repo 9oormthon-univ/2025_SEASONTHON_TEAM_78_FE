@@ -1,11 +1,11 @@
-//색만 바꿔서 재사용 가능하도록
+//사용안함 삭제예정
 
-import type { ReactNode } from 'react';
-import CloseIcon from '@/assets/close.svg';
-import { MODAL_THEME } from '@/components/common/modalTheme';
-import type { IconName } from '@/components/Icon/ChallengeIcon';
+import type { ReactNode } from "react";
+import CloseIcon from "@/assets/close.svg";
+import { MODAL_THEME } from "@/components/common/modalTheme";
+import type { IconName } from "@/components/Icon/ChallengeIcon";
 
-type Variant = 'themed' | 'white';
+type Variant = "themed" | "white";
 
 interface CardModalShellProps {
   isOpen: boolean;
@@ -20,16 +20,16 @@ interface CardModalShellProps {
 function CardModalShell({
   isOpen,
   onClose,
-  title = '',
+  title = "",
   iconName,
-  variant = 'white',
+  variant = "white",
   children,
-  className = '',
+  className = "",
 }: CardModalShellProps) {
   if (!isOpen) return null;
 
   const bgClass =
-    variant === 'themed' && iconName ? MODAL_THEME[iconName].bg : 'bg-white';
+    variant === "themed" && iconName ? MODAL_THEME[iconName].bg : "bg-white";
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -37,10 +37,10 @@ function CardModalShell({
 
       <div
         className={[
-          'relative flex w-[343px] h-[627px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl',
+          "relative flex w-[343px] h-[627px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl",
           bgClass,
           className,
-        ].join(' ')}
+        ].join(" ")}
       >
         <div className="flex items-center justify-center gap-[42px] p-4">
           <div className="h-6 w-6" />
