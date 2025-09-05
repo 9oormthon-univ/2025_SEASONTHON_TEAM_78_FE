@@ -9,12 +9,12 @@ export default function BoxButtonLarge({
   children,
   onClick,
   disabled = false,
-  className = '',
+  className = "",
 }: ButtonProps) {
   return (
     <div
       className="fixed left-1/2 -translate-x-1/2 bottom-[calc(env(safe-area-inset-bottom))] 
-    w-[clamp(320px,calc(100vw),478px)] py-4 px-6 border-t border-[#f4f7fb] bg-gray-50/10
+    w-[clamp(320px,calc(100vw),478px)] p-4 border-t border-[#f4f7fb] bg-gray-50/10
       backdrop-blur-lg"
     >
       {/* 버튼 */}
