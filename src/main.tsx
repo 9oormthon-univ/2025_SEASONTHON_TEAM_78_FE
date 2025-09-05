@@ -1,5 +1,5 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
   Navigate,
@@ -18,15 +18,16 @@ import Home from "./pages/Home";
 import MyPage from "@/pages/MyPage";
 import CreateChallenge from "./pages/CreateChallenge";
 import ChallengeDetail from "./pages/ChallengeDetail.tsx";
-import Feed from './pages/Feed.tsx';
+import TodayChallenge from "./pages/TodayChallenge.tsx";
+import Feed from "./pages/Feed.tsx";
 
 // 라우터 구성
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
     children: [
-      { path: 'login', element: <Login /> },
+      { path: "login", element: <Login /> },
       {
         element: <Protected />,
         children: [
@@ -37,10 +38,15 @@ const router = createBrowserRouter([
           { path: "my-page", element: <MyPage /> },
           { path: "create-challenge", element: <CreateChallenge /> },
           { path: "challenge/:id", element: <ChallengeDetail /> },
-          { path: 'feed', element: <Feed /> },
+          { path: "challenge/:id/today", element: <TodayChallenge /> },
+          {
+            path: "challenge/:id/today/:certificationId",
+            element: <TodayChallenge />,
+          },
+          { path: "feed", element: <Feed /> },
         ],
       },
-      { path: '*', element: <Navigate to="/" replace /> },
+      { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ]);
@@ -55,7 +61,7 @@ const queryClient = new QueryClient({
   },
 });
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />

@@ -6,9 +6,15 @@ interface BackHeaderProps {
   title: string;
   icon?: ReactNode; //오른쪽 아이콘
   actionPath?: string; //아이콘 클릭시 경로
+  onActionClick?: () => void; //아이콘 클릭시 실행할 함수
 }
 
-const BackHeader = ({ title, icon, actionPath }: BackHeaderProps) => {
+const BackHeader = ({
+  title,
+  icon,
+  actionPath,
+  onActionClick,
+}: BackHeaderProps) => {
   const navigate = useNavigate();
 
   const handleClickBack = () => {
@@ -16,7 +22,9 @@ const BackHeader = ({ title, icon, actionPath }: BackHeaderProps) => {
   };
 
   const handleClickAction = () => {
-    if (actionPath) {
+    if (onActionClick) {
+      onActionClick();
+    } else if (actionPath) {
       navigate(actionPath);
     }
   };
