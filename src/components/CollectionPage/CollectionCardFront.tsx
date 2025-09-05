@@ -1,6 +1,6 @@
-import CloseIcon from '@/assets/close.svg';
-import { MODAL_THEME } from '@/components/common/modalTheme';
-import ChallengeIcon, { type IconName } from '@/components/Icon/ChallengeIcon';
+import CloseIcon from "@/assets/close.svg";
+import { MODAL_THEME } from "@/components/common/modalTheme";
+import ChallengeIcon, { type IconName } from "@/components/Icon/ChallengeIcon";
 
 interface CollectionCardFrontProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ function CollectionCardFront({
 }: CollectionCardFrontProps) {
   if (!isOpen) return null;
 
-  const bgClass = MODAL_THEME[iconName].bg;
+  const theme = MODAL_THEME[iconName];
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -32,9 +32,9 @@ function CollectionCardFront({
 
       <div
         className={[
-          'relative flex h-[627px] w-[343px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl',
-          bgClass,
-        ].join(' ')}
+          "relative flex h-[627px] w-[343px] max-w-[90vw] flex-col overflow-hidden rounded-[30px] shadow-xl",
+          theme.bg,
+        ].join(" ")}
       >
         <div className="flex items-center justify-center gap-[42px] p-4">
           <div className="h-6 w-6" />
@@ -51,24 +51,34 @@ function CollectionCardFront({
         </div>
 
         <div
-          className="flex cursor-pointer flex-col gap-[26px] px-4 pb-6"
+          className="flex cursor-pointer flex-col gap-[26px] px-4 pt-16"
           onClick={onFlip}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onFlip?.()}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onFlip?.()}
         >
+          {/* 그래픽으로 바뀔예정 */}
+          <div className="flex h-[311px] w-[311px] items-center justify-center rounded-[40px] p-6">
+            <img
+              src={theme.graphic}
+              alt={`${title} 달성 그래픽`}
+              className="h-full w-full object-contain"
+              loading="lazy"
+            />
+          </div>
+
           <div className="flex items-center gap-4">
             <div className="rounded-[20px] bg-white/40 p-5">
-              <ChallengeIcon name={iconName} variant="black" alt={title} />
+              <ChallengeIcon
+                name={iconName}
+                variant="black"
+                alt={title}
+                size={36}
+              />
             </div>
             <div className="flex flex-col gap-2 py-2.5">
               <p className="text-left text-xl font-bold text-black">{title}</p>
             </div>
-          </div>
-
-          {/* 그래픽으로 바뀔예정 */}
-          <div className="flex h-[311px] w-[311px] items-center justify-center rounded-[40px] bg-white/40 p-6">
-            <p className="text-xl font-bold text-black">달성! 그래픽</p>
           </div>
         </div>
       </div>
