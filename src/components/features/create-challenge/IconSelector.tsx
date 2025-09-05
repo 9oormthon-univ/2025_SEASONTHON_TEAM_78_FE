@@ -1,5 +1,8 @@
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-import { type IconName, ICON_LIGHT_COLORS } from "@/types/challenge";
+import {
+  type IconName,
+  ICON_LIGHT_COLORS,
+} from "@/components/Icon/challenge-color";
 
 interface IconSelectorProps {
   selectedIcon: IconName | null;
@@ -15,6 +18,10 @@ const ICON_OPTIONS: IconName[] = [
   "water",
   "music",
   "alarm",
+  "box",
+  "cook",
+  "moon",
+  "run",
 ];
 
 export default function IconSelector({

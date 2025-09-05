@@ -1,28 +1,42 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { kakaoLogout } from "@/lib/api/kakao.ts";
+import { useQueryClient } from "@tanstack/react-query";
+import { logout } from "@/lib/api/auth";
 
-export default function LogoutButton() {
-  const qc = useQueryClient();
+interface LogoutButtonProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+export default function LogoutButton({
+  className,
+  children,
+}: LogoutButtonProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const handleLogout = async () => {
     try {
-      await kakaoLogout();
-
-      // React Query 캐시 초기화
-      qc.removeQueries({ queryKey: ["me"] });
-
-      // 로그인 페이지로 바로 이동
+      await logout();
+      // 토큰 제거
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      // 쿼리 캐시 초기화
+      queryClient.clear();
+      // 로그인 페이지로 이동
       navigate("/login", { replace: true });
-    } catch (e) {
-      console.error("[logout error]", e);
+    } catch (error) {
+      console.error("로그아웃 오류:", error);
+      // API 오류가 있어도 로컬 상태는 정리
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      queryClient.clear();
+      navigate("/login", { replace: true });
     }
   };
 
   return (
-    <button onClick={handleLogout} className="px-3 py-2 rounded bg-gray-200">
-      로그아웃
+    <button onClick={handleLogout} className={className}>
+      {children}
     </button>
   );
 }

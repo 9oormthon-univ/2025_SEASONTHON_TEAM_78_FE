@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import BackNavBar from "@/components/Navbar/BackNavBar";
-import { type IconName } from "@/types/challenge";
+import { type IconName } from "@/components/Icon/challenge-color";
 import TodayChallengeForm from "@/components/features/today-challenge/TodayChallengeForm";
 
 interface Challenge {
