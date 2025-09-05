@@ -1,26 +1,26 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import IconSelector from '@/components/features/create-challenge/IconSelector';
-import ChallengeForm from '@/components/features/create-challenge/ChallengeForm';
-import BoxButtonLarge from '@/components/common/BoxButtonLarge';
-import Toast from '@/components/common/Toast';
-import BackNavBar from '@/components/Navbar/BackNavBar';
-import ChallengeConfirmModal from '@/components/features/create-challenge/ChallengeConfirmModal';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import IconSelector from "@/components/features/create-challenge/IconSelector";
+import ChallengeForm from "@/components/features/create-challenge/ChallengeForm";
+import BoxButtonLarge from "@/components/common/BoxButtonLarge";
+import Toast from "@/components/common/Toast";
+import BackNavBar from "@/components/Navbar/BackNavBar";
+import FormConfirmModal from "@/components/common/FormConfirmModal";
 
 type IconName =
-  | 'ball'
-  | 'book'
-  | 'broom'
-  | 'bus'
-  | 'edit'
-  | 'water'
-  | 'music'
-  | 'alarm';
+  | "ball"
+  | "book"
+  | "broom"
+  | "bus"
+  | "edit"
+  | "water"
+  | "music"
+  | "alarm";
 
 export default function CreateChallenge() {
   const navigate = useNavigate();
-  const [challengeTitle, setChallengeTitle] = useState('');
-  const [challengeDescription, setChallengeDescription] = useState('');
+  const [challengeTitle, setChallengeTitle] = useState("");
+  const [challengeDescription, setChallengeDescription] = useState("");
   const [selectedIcon, setSelectedIcon] = useState<IconName | null>(null);
   const [challengeDuration, setChallengeDuration] = useState(7);
   const [showToast, setShowToast] = useState(false);
@@ -33,7 +33,7 @@ export default function CreateChallenge() {
   // 모달 핸들러
   const handleConfirmCancel = () => {
     setShowConfirmModal(false);
-    navigate('/home');
+    navigate("/home");
   };
 
   const handleCloseModal = () => {
@@ -49,22 +49,22 @@ export default function CreateChallenge() {
         setTimeout(() => {
           window.history.pushState(
             { preventBack: true },
-            '',
+            "",
             window.location.href
           );
         }, 0);
       }
     };
 
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     // 작성 중인 내용이 있을 때만 히스토리에 상태 추가
     if (hasContent) {
-      window.history.pushState({ preventBack: true }, '', window.location.href);
+      window.history.pushState({ preventBack: true }, "", window.location.href);
     }
 
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [hasContent]);
 
@@ -77,22 +77,22 @@ export default function CreateChallenge() {
       icon: selectedIcon,
       duration: challengeDuration,
       createdAt: new Date().toISOString(),
-      status: 'pending' as const,
+      status: "pending" as const,
     };
 
     // 로컬 스토리지에서 기존 챌린지 목록 가져오기(임시)
     const existingChallenges = JSON.parse(
-      localStorage.getItem('challenges') || '[]'
+      localStorage.getItem("challenges") || "[]"
     );
 
     // 새 챌린지 추가
     const updatedChallenges = [...existingChallenges, newChallenge];
-    localStorage.setItem('challenges', JSON.stringify(updatedChallenges));
-    console.log('챌린지 등록 완료:', newChallenge);
+    localStorage.setItem("challenges", JSON.stringify(updatedChallenges));
+    console.log("챌린지 등록 완료:", newChallenge);
     setShowToast(true);
 
     setTimeout(() => {
-      navigate('/home');
+      navigate("/home");
     }, 2000);
   };
 
@@ -124,15 +124,16 @@ export default function CreateChallenge() {
       </BoxButtonLarge>
 
       <Toast
-        message="챌린지 추가가 완료됐어요."
+        message="챌린지 추가가 완료되었습니다."
         isVisible={showToast}
         onClose={() => setShowToast(false)}
       />
 
-      <ChallengeConfirmModal
+      <FormConfirmModal
         isOpen={showConfirmModal}
         onClose={handleCloseModal}
         onConfirm={handleConfirmCancel}
+        title="챌린지"
       />
     </div>
   );

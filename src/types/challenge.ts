@@ -51,6 +51,20 @@ export interface ChallengeSuggestion {
   icon: IconName;
 }
 
+// API에서 받아올 챌린지 데이터 구조
+export interface ChallengeApiResponse {
+  id: string;
+  title: string;
+  description: string;
+  icon: IconName;
+  duration: number; // 챌린지 기간 (일수)
+  completedDays: number; // 성공한 일수
+  createdAt: string;
+  status: "pending" | "done";
+  // API에서 계산된 진행률 (선택사항)
+  progressPercentage?: number;
+}
+
 export const CHALLENGE_SUGGESTIONS: ChallengeSuggestion[] = [
   { id: "1", title: "물 8잔 마시기", icon: "water" },
   { id: "2", title: "매일 30분 운동하기", icon: "ball" },
