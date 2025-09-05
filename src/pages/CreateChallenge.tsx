@@ -15,7 +15,11 @@ type IconName =
   | "edit"
   | "water"
   | "music"
-  | "alarm";
+  | "alarm"
+  | "box"
+  | "cook"
+  | "moon"
+  | "run";
 
 export default function CreateChallenge() {
   const navigate = useNavigate();

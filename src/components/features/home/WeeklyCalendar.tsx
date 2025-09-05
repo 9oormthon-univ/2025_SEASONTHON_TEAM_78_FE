@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { type IconName, ICON_COLORS } from "@/types/challenge";
+import { type IconName, ICON_COLORS } from "@/components/Icon/challenge-color";
 
 type Challenge = {
   id: string;
