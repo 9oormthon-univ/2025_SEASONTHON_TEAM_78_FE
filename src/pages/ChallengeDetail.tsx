@@ -3,7 +3,11 @@ import { useState, useEffect } from "react";
 import BackNavBar from "@/components/Navbar/BackNavBar";
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
 import CircularProgress from "@/components/common/CircularProgress";
-import { type IconName, ICON_LIGHT_COLORS } from "@/types/challenge";
+import FormConfirmModal from "@/components/common/FormConfirmModal";
+import {
+  type IconName,
+  ICON_LIGHT_COLORS,
+} from "@/components/Icon/challenge-color";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 
 interface Challenge {
@@ -13,9 +17,10 @@ interface Challenge {
   icon: IconName;
   duration: number;
   createdAt: string;
-  status: "pending" | "done";
+  status: "pending" | "done" | "stopped";
   completedDays?: number;
   totalDays?: number;
+  stoppedAt?: string;
 }
 
 interface Certification {
@@ -33,6 +38,8 @@ export default function ChallengeDetail() {
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [hasTodayCertification, setHasTodayCertification] = useState(false);
+  const [showStopModal, setShowStopModal] = useState(false);
+  const [isStopping, setIsStopping] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -90,17 +97,36 @@ export default function ChallengeDetail() {
     return () => window.removeEventListener("focus", handleFocus);
   }, [id]);
 
-  const handleDelete = () => {
-    if (id && window.confirm("정말로 이 챌린지를 삭제하시겠습니까?")) {
-      // 로컬 스토리지에서 챌린지 삭제
+  const handleStopClick = () => {
+    setShowStopModal(true);
+  };
+
+  const handleStop = async () => {
+    if (!id) return;
+
+    setIsStopping(true);
+    try {
+      // 챌린지 상태를 'stopped'로 변경 (인증 데이터는 그대로 유지)
       const challenges = JSON.parse(localStorage.getItem("challenges") || "[]");
-      const updatedChallenges = challenges.filter(
-        (c: Challenge) => c.id !== id
+      const updatedChallenges = challenges.map((c: Challenge) =>
+        c.id === id
+          ? {
+              ...c,
+              status: "stopped" as const,
+              stoppedAt: new Date().toISOString(),
+            }
+          : c
       );
       localStorage.setItem("challenges", JSON.stringify(updatedChallenges));
 
+      setShowStopModal(false);
       // 홈 페이지로 이동
       navigate("/home");
+    } catch (error) {
+      console.error("챌린지 중단 중 오류가 발생했습니다:", error);
+      alert("챌린지 중단 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsStopping(false);
     }
   };
 
@@ -161,7 +187,7 @@ export default function ChallengeDetail() {
             />
           </svg>
         }
-        onActionClick={handleDelete}
+        onActionClick={handleStopClick}
       />
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-6">
@@ -289,7 +315,31 @@ export default function ChallengeDetail() {
           )}
 
           {/* 챌린지 인증 버튼 */}
-          {hasTodayCertification ? (
+          {challenge?.status === "stopped" ? (
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <svg
+                  className="w-6 h-6 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"
+                  />
+                </svg>
+                <span className="text-gray-800 font-semibold text-lg">
+                  챌린지가 중단되었습니다
+                </span>
+              </div>
+              <p className="text-gray-600 text-sm">
+                중단된 챌린지는 더 이상 인증할 수 없습니다
+              </p>
+            </div>
+          ) : hasTodayCertification ? (
             <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <svg
@@ -318,6 +368,22 @@ export default function ChallengeDetail() {
           )}
         </div>
       </div>
+
+      {/* 챌린지 중단 확인 모달 */}
+      <FormConfirmModal
+        isOpen={showStopModal}
+        onClose={() => setShowStopModal(false)}
+        onConfirm={handleStop}
+        variant="custom"
+        title="챌린지"
+        message={`정말로 이 챌린지를 중단하시겠습니까?
+                  중단된 챌린지는 더 이상 인증할 수 없지만,
+                  기존 인증 데이터는 그대로 보존됩니다.`}
+        confirmText="중단"
+        cancelText="취소"
+        isLoading={isStopping}
+        confirmButtonColor="red"
+      />
     </div>
   );
 }
