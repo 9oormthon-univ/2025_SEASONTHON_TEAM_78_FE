@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import TopNavBar from "@/components/Navbar/TopNavBar";
 import BottomNavBar from "@/components/Navbar/BottomNavBar";
 import FeedCard from "@/components/FeedPage/FeedCard";
@@ -37,23 +37,26 @@ function Feed() {
   };
 
   const size = 10;
-  async function load(p = 0) {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const data: Page<CertificationFeed> = await getFeed(p, size);
-      const next = data.pageContents ?? [];
-      setItems((prev) => (p === 0 ? next : [...prev, ...next]));
-      setHasMore(data.pageNumber + 1 < data.totalPages);
-      setPage(data.pageNumber);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const load = useCallback(
+    async (p = 0) => {
+      if (loading) return;
+      setLoading(true);
+      try {
+        const data: Page<CertificationFeed> = await getFeed(p, size);
+        const next = data.pageContents ?? [];
+        setItems((prev) => (p === 0 ? next : [...prev, ...next]));
+        setHasMore(data.pageNumber + 1 < data.totalPages);
+        setPage(data.pageNumber);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, size]
+  );
 
   useEffect(() => {
     load(0);
-  }, []);
+  }, [load]);
 
   const handleSubmitCheer = async (stickerId: number) => {
     if (selectedCertId == null) return;
