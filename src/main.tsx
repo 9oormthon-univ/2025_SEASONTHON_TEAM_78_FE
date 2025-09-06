@@ -22,6 +22,7 @@ import ChallengeDetail from "./pages/ChallengeDetail.tsx";
 import TodayChallenge from "./pages/TodayChallenge.tsx";
 import Feed from "./pages/Feed.tsx";
 import EditProfile from "./pages/EditProfile.tsx";
+import ActiveChallenge from "./pages/ActiveChallenge.tsx";
 
 // 라우터 구성
 const router = createBrowserRouter([
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
           },
           { path: "feed", element: <Feed /> },
           { path: "edit-profile", element: <EditProfile /> },
+          { path: "active-challenge", element: <ActiveChallenge /> },
         ],
       },
       { path: "*", element: <Navigate to="/" replace /> },
