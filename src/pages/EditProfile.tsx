@@ -1,31 +1,80 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import BackHeader from "@/components/Navbar/BackNavBar";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
-import type { Sticker } from "@/types/profile";
+import { useMe } from "@/hooks/useMe";
+import { updateMyProfile } from "@/lib/api/userProfile";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Toast from "@/components/common/Toast";
+import { useNavigate } from "react-router-dom";
+
+type Sticker = { id: string; src: string; alt: string };
+
 
 const STICKERS: Sticker[] = [
-  { id: "emoji-1", src: "/images/emoji-wow.webp", alt: "wow" },
-  { id: "emoji-2", src: "/images/emoji-cool.webp", alt: "cool" },
-  { id: "emoji-3", src: "/images/emoji-heart.webp", alt: "heart" },
+  { id: "1", src: "/images/emoji-wow.webp", alt: "wow" },
+  { id: "2", src: "/images/emoji-cool.webp", alt: "cool" },
+  { id: "3", src: "/images/emoji-heart.webp", alt: "heart" },
 ];
 
 function EditProfile() {
-  const initialNickname = "미르미";
-  const initialStickerId = "emoji-3";
-
-  const [nickname, setNickname] = useState(initialNickname);
-  const [selected, setSelected] = useState<string>(initialStickerId);
-
   const inputRef = useRef<HTMLInputElement>(null);
   const MAX_LEN = 11;
+  const navigate = useNavigate();
+  const navTimerRef = useRef<number | null>(null);
 
+  // 내 프로필
+  const { data: me, isLoading, error } = useMe();
+
+  // 상태
+  const [nickname, setNickname] = useState<string>("");
+  const [selected, setSelected] = useState<string>("");
+
+  const [isToastVisible, setIsToastVisible] = useState(false);
+
+  // 초기 세팅
+  useEffect(() => {
+    if (me) {
+      setNickname(me.nickname ?? "");
+      setSelected(me.picture ?? "");
+    }
+  }, [me]);
+
+  useEffect(() => {
+    return () => {
+      if (navTimerRef.current) {
+        clearTimeout(navTimerRef.current);
+      }
+    };
+  }, []);
+
+  // 변경 여부
   const isChanged = useMemo(() => {
-    return nickname.trim() !== initialNickname || selected !== initialStickerId;
-  }, [nickname, selected]);
+    if (!me) return false;
+    const initNick = me.nickname ?? "";
+    const initPic = me.picture ?? "";
+    return nickname.trim() !== initNick || selected !== initPic;
+  }, [nickname, selected, me]);
 
-  const handleSubmit = () => {
-    console.log("submit", { nickname, selected });
-  };
+  const qc = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: () =>
+      updateMyProfile({ nickname: nickname.trim(), picture: selected }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["me"] });
+      setIsToastVisible(true);
+      navTimerRef.current = window.setTimeout(() => {
+        navigate("/my-page");
+      }, 900);
+    },
+    onError: () => {
+      alert("수정에 실패했습니다.");
+    },
+  });
+
+  const handleSubmit = () => mutate();
+
+  if (isLoading) return <p>불러오는 중...</p>;
+  if (error) return <p>프로필 불러오기 실패</p>;
 
   return (
     <div className="min-h-screen bg-white">
@@ -49,8 +98,7 @@ function EditProfile() {
                 }}
                 placeholder="닉네임을 입력해 주세요."
                 maxLength={MAX_LEN}
-                className={`w-full text-base text-[#2a2c2e] bg-transparent outline-none
-                transition-all duration-200`}
+                className="w-full text-base text-[#2a2c2e] bg-transparent outline-none transition-all duration-200"
                 aria-describedby="nickname-counter"
               />
             </div>
@@ -100,10 +148,16 @@ function EditProfile() {
 
       <BoxButtonLarge
         onClick={handleSubmit}
-        disabled={!isChanged || nickname.trim().length === 0}
+        disabled={!isChanged || nickname.trim().length === 0 || isPending}
       >
-        수정 완료
+        {isPending ? "저장 중..." : "수정 완료"}
       </BoxButtonLarge>
+
+      <Toast
+        message="프로필이 수정되었습니다!"
+        isVisible={isToastVisible}
+        onClose={() => setIsToastVisible(false)}
+      />
     </div>
   );
 }

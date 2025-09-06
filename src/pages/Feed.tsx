@@ -1,88 +1,127 @@
-import { useState } from 'react';
-import TopNavBar from '@/components/Navbar/TopNavBar';
-import BottomNavBar from '@/components/Navbar/BottomNavBar';
-import FeedCard from '@/components/FeedPage/FeedCard';
-import CheerBottomSheet from '@/components/FeedPage/CheerBottomSheet';
-import FeedDetailModal from '@/components/FeedPage/FeedDetailModal';
+import { useEffect, useState, useCallback } from "react";
+import TopNavBar from "@/components/Navbar/TopNavBar";
+import BottomNavBar from "@/components/Navbar/BottomNavBar";
+import FeedCard from "@/components/FeedPage/FeedCard";
+import CheerBottomSheet from "@/components/FeedPage/CheerBottomSheet";
+import FeedDetailModal from "@/components/FeedPage/FeedDetailModal";
+import { getFeed, type CertificationFeed, type Page } from "@/lib/api/feed";
+import { postCheer } from "@/lib/api/cheer";
+import Toast from "@/components/common/Toast";
 
 type DetailData = {
   imageUrl: string;
   profileUrl: string;
   nickname: string;
-  challengeTitle: string;
+  title: string;
   content: string;
 };
 
 function Feed() {
+  const [items, setItems] = useState<CertificationFeed[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const [isCheerOpen, setCheerOpen] = useState(false);
+  const [selectedCertId, setSelectedCertId] = useState<number | null>(null);
+
   const [isDetailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState<DetailData | null>(null);
 
-  const openCheer = () => setCheerOpen(true);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isToastVisible, setIsToastVisible] = useState(false);
 
-  function openDetail(data: DetailData) {
-    setDetail(data);
-    setDetailOpen(true);
-  }
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setIsToastVisible(true);
+  };
 
+  const size = 10;
+  const load = useCallback(
+    async (p = 0) => {
+      if (loading) return;
+      setLoading(true);
+      try {
+        const data: Page<CertificationFeed> = await getFeed(p, size);
+        const next = data.pageContents ?? [];
+        setItems((prev) => (p === 0 ? next : [...prev, ...next]));
+        setHasMore(data.pageNumber + 1 < data.totalPages);
+        setPage(data.pageNumber);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, size]
+  );
+
+  useEffect(() => {
+    load(0);
+  }, [load]);
+
+  const handleSubmitCheer = async (stickerId: number) => {
+    if (selectedCertId == null) return;
+    const map: Record<number, "CLAP" | "HEART" | "FIRE"> = {
+      1: "CLAP",
+      2: "HEART",
+      3: "FIRE",
+    };
+    try {
+      await postCheer(selectedCertId, map[stickerId]);
+      showToast("응원 완료!");
+    } catch {
+      showToast("같은 이모티콘은 두 번 누를 수 없어요!");
+    }
+  };
   return (
     <div>
       <TopNavBar title="피드" />
 
       <div className="flex flex-col items-center gap-[26px] py-6">
-        <FeedCard
-          imageUrl="/images/cat1.webp"
-          totalCheers={99}
-          onCheer={openCheer}
-          profileUrl="/images/cat1.webp"
-          nickname="미르미"
-          challengeTitle="게시물 제목"
-          content="계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의 어머님, 그리고 당신은 멀리 북간도에 계십니다. 별 하나에 추억과 별 하나에 사랑과 별 하나에 쓸쓸함과 별 하나에 동경과 별 하나에 시와 별 하나에 어머니, 어머니, 어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의"
-          onClickContent={() =>
-            openDetail({
-              imageUrl: '/images/cat1.webp',
-              profileUrl: '/images/cat1.webp',
-              nickname: '미르미',
-              challengeTitle: '게시물 제목',
-              content:
-                '계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의 어머님, 그리고 당신은 멀리 북간도에 계십니다. 별 하나에 추억과 별 하나에 사랑과 별 하나에 쓸쓸함과 별 하나에 동경과 별 하나에 시와 별 하나에 어머니, 어머니, 어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의',
-            })
-          }
-        />
+        {items.map((it) => (
+          <FeedCard
+            key={it.certificationId}
+            imageUrl={it.imageUrl}
+            totalCheers={it.totalReactions}
+            onCheer={() => {
+              setSelectedCertId(it.certificationId);
+              setCheerOpen(true);
+            }}
+            profileUrl={it.authorPicture}
+            nickname={it.authorNickname}
+            challengeTitle={it.title}
+            content={it.content}
+            onClickContent={() => {
+              setDetail({
+                imageUrl: it.imageUrl,
+                profileUrl: it.authorPicture,
+                nickname: it.authorNickname,
+                title: it.title,
+                content: it.content,
+              });
+              setDetailOpen(true);
+            }}
+          />
+        ))}
 
-        <FeedCard
-          imageUrl="/images/cat1.webp"
-          totalCheers={99}
-          onCheer={openCheer}
-          profileUrl="/images/cat1.webp"
-          nickname="미르미"
-          challengeTitle="게시물 제목"
-          content="계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의 어머님, 그리고 당신은 멀리 북간도에 계십니다. 별 하나에 추억과 별 하나에 사랑과 별 하나에 쓸쓸함과 별 하나에 동경과 별 하나에 시와 별 하나에 어머니, 어머니, 어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의"
-          onClickContent={() =>
-            openDetail({
-              imageUrl: '/images/cat1.webp',
-              profileUrl: '/images/cat1.webp',
-              nickname: '미르미',
-              challengeTitle: '게시물 제목',
-              content:
-                '계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의 어머님, 그리고 당신은 멀리 북간도에 계십니다. 별 하나에 추억과 별 하나에 사랑과 별 하나에 쓸쓸함과 별 하나에 동경과 별 하나에 시와 별 하나에 어머니, 어머니, 어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 어머님, 그리고 당신은 멀리 북간도에 계십니다. 계절이 지나가는 하늘에는 가을로 가득 차 있습니다. 그러나, 겨울이 지나고 나의',
-            })
-          }
-        />
+        {!loading && hasMore && (
+          <button
+            type="button"
+            onClick={() => load(page + 1)}
+            className="rounded-full bg-black/80 px-4 py-2 text-sm font-semibold text-white"
+          >
+            더보기
+          </button>
+        )}
       </div>
 
       <BottomNavBar />
 
-      {/* 응원 바텀시트 */}
       <CheerBottomSheet
         isOpen={isCheerOpen}
         onClose={() => setCheerOpen(false)}
-        onSubmit={(stickerId: string) => {
-          console.log('submit cheer', stickerId);
-        }}
+        onSubmit={handleSubmitCheer}
       />
 
-      {/* 상세 모달 */}
       {detail && (
         <FeedDetailModal
           isOpen={isDetailOpen}
@@ -90,10 +129,15 @@ function Feed() {
           imageUrl={detail.imageUrl}
           profileUrl={detail.profileUrl}
           nickname={detail.nickname}
-          challengeTitle={detail.challengeTitle}
+          challengeTitle={detail.title}
           content={detail.content}
         />
       )}
+      <Toast
+        message={toastMessage}
+        isVisible={isToastVisible}
+        onClose={() => setIsToastVisible(false)}
+      />
     </div>
   );
 }

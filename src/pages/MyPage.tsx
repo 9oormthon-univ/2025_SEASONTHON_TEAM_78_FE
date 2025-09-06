@@ -2,40 +2,78 @@ import { Link } from "react-router-dom";
 import TopNavBar from "@/components/Navbar/TopNavBar";
 import BottomNavBar from "@/components/Navbar/BottomNavBar";
 import LogoutButton from "@/components/features/auth/LogoutButton";
-
-/* interface MyPageProps {
-  userName: string; //카톡 이름
-  avatarUrl: string; //프로필 사진 선택
-}
- */
+import { useMe } from "@/hooks/useMe";
 
 function Divider() {
   return <hr className="w-full border-t border-[#E7EAED]" />;
 }
 
+const STICKER_SRC: Record<string, string> = {
+  "1": "/images/emoji-wow.webp",
+  "2": "/images/emoji-cool.webp",
+  "3": "/images/emoji-heart.webp",
+};
+
+const isStickerId = (v?: string | null) =>
+  typeof v === "string" && /^\d+$/.test(v);
+
+function resolveAvatarSrc(picture?: string | null) {
+  if (isStickerId(picture))
+    return STICKER_SRC[picture as keyof typeof STICKER_SRC];
+  if (typeof picture === "string" && picture.length > 0) return picture;
+  return "/images/emoji-cool.webp"; // fallback
+}
+
 function MyPage() {
-  //api 연결전 하드코딩
-  const userName = "미르미";
-  const avatarUrl = "/images/cat1.webp";
+  const { data: me, isLoading, error } = useMe();
+
+  if (isLoading) {
+    return (
+      <>
+        <TopNavBar title="마이" />
+        <div className="flex items-center justify-center h-screen">
+          <p>불러오는 중...</p>
+        </div>
+        <BottomNavBar />
+      </>
+    );
+  }
+
+  if (error || !me) {
+    return (
+      <>
+        <TopNavBar title="마이" />
+        <div className="flex items-center justify-center h-screen">
+          <p>내 정보를 불러오지 못했습니다.</p>
+        </div>
+        <BottomNavBar />
+      </>
+    );
+  }
+
+  const avatarSrc = resolveAvatarSrc(me.picture);
+
   return (
     <>
       <TopNavBar title="마이" />
 
       <div className="flex flex-col gap-6 p-4">
+        {/* 프로필 영역 */}
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 rounded-full overflow-hidden border border-[#DAD9D1] bg-white">
             <img
-              src={avatarUrl}
+              src={avatarSrc}
               alt="프로필 이미지"
               className="w-full h-full object-cover"
               draggable={false}
             />
           </div>
-          <p className="text-lg font-bold text-black">{userName}</p>
+          <p className="text-lg font-bold text-black">{me.nickname}</p>
         </div>
 
         <Divider />
 
+        {/* 내 챌린지 */}
         <section className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-left text-black">
             내 챌린지
@@ -56,6 +94,7 @@ function MyPage() {
 
         <Divider />
 
+        {/* 내 정보 */}
         <section className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-left text-black">내 정보</p>
           <Link
@@ -68,6 +107,7 @@ function MyPage() {
 
         <Divider />
 
+        {/* 로그아웃 */}
         <section className="flex flex-col gap-2">
           <LogoutButton className="block py-3 text-base font-medium text-left">
             로그아웃
