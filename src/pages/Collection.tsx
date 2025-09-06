@@ -8,6 +8,8 @@ import CollectionCardBack from "@/components/CollectionPage/CollectionCardBack";
 import type { IconName } from "@/components/Icon/ChallengeIcon";
 import {
   getCompletedChallenges,
+  getCollectionDetail,
+  toReactionCounts,
   type CompletedChallengeRaw,
 } from "@/lib/api/collection";
 
@@ -40,8 +42,8 @@ function CollectionPage() {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isBack, setIsBack] = useState(false); //현재 뒷면 표시여부
 
+  //완료목록
   const { data, isLoading, isError } = useQuery({
-    //완료된 챌린지 불러오기
     queryKey: ["completedChallenges"],
     queryFn: () => getCompletedChallenges(),
   });
@@ -54,6 +56,15 @@ function CollectionPage() {
   };
 
   const flip = () => setIsBack((prev) => !prev); //앞뒤전환
+
+  //뒷면열렸을때 상세 api호출
+  const { data: detail, isLoading: isDetailLoading } = useQuery({
+    queryKey: ["collectionDetail", selectedItem?.id],
+    queryFn: () => getCollectionDetail(selectedItem!.id),
+    enabled: !!selectedItem && isBack, // 앞면일 땐 비활성
+  });
+
+  const counts = toReactionCounts(detail);
 
   return (
     <div className="w-full max-w-[480px] mx-auto">
@@ -115,11 +126,14 @@ function CollectionPage() {
           onClose={closeModal}
           title={selectedItem.title}
           iconName={selectedItem.icon}
-          description="오늘의 작은 성공을 기록했어요!"
-          //추후 api연결
-          count1={3}
-          count2={7}
-          count3={12}
+          description={
+            isDetailLoading
+              ? "불러오는 중..."
+              : (detail?.content ?? "설명이 없습니다.")
+          }
+          count1={counts.clap}
+          count2={counts.heart}
+          count3={counts.fire}
           onFlip={flip}
         />
       )}
