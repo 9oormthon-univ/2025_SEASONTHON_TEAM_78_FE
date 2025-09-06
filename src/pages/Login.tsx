@@ -1,6 +1,8 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import KakaoLoginButton from "@/components/features/auth/KakaoLoginButton";
+import { useMe } from "@/hooks/useMe";
 
 interface LocationState {
   from?: {
@@ -12,7 +14,24 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const qc = useQueryClient();
+  const { data: userData, isLoading } = useMe();
   const from = (location.state as LocationState)?.from?.pathname || "/";
+
+  useEffect(() => {
+    if (userData && !isLoading) {
+      if (userData.picture) {
+        if (userData.picture.length > 1) {
+          navigate("/profile-select", { replace: true });
+        } else if (userData.picture.length === 1) {
+          navigate("/home", { replace: true });
+        } else {
+          throw new Error("사용자 프로필에 picture 정보가 없습니다.");
+        }
+      } else {
+        navigate("/profile-select", { replace: true });
+      }
+    }
+  }, [userData, isLoading, navigate]);
 
   const handleSuccess = async (at: string) => {
     console.log("[login] accessToken:", at);

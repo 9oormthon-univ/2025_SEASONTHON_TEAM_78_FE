@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMe } from "@/hooks/useMe";
 import { useNavigate } from "react-router-dom";
 import ProfileContent from "@/components/features/profile-select/ProfileContent";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
+import { updateUserProfile } from "@/lib/api/user";
 
 interface ImageOption {
   id: number;
@@ -18,7 +19,22 @@ export default function ProfileSelect() {
 
   const nickname = data?.nickname ?? "";
 
-  // 로딩 중이거나 에러가 있으면 로딩 표시
+  useEffect(() => {
+    if (data && !isLoading) {
+      if (data.picture) {
+        if (data.picture.length > 1) {
+          navigate("/profile-select", { replace: true });
+        } else if (data.picture.length === 1) {
+          navigate("/home", { replace: true });
+        } else {
+          throw new Error("사용자 프로필에 picture 정보가 없습니다.");
+        }
+      } else {
+        navigate("/profile-select", { replace: true });
+      }
+    }
+  }, [data, isLoading, navigate]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-dvh pb-30 pt-15 px-10 items-center justify-center">
@@ -39,9 +55,18 @@ export default function ProfileSelect() {
     setSelectedImage(imageInfo);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedImage !== null) {
-      navigate("/home");
+      try {
+        await updateUserProfile({
+          picture: selectedImage.id,
+          nickname: nickname,
+        });
+        navigate("/home");
+      } catch (error) {
+        console.error("프로필 업데이트 오류:", error);
+        navigate("/home");
+      }
     }
   };
 
