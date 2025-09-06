@@ -6,27 +6,26 @@ import {
 } from "@/components/Icon/challenge-color";
 import CircularProgress from "@/components/common/CircularProgress";
 
-interface Challenge {
-  id: string;
+interface CertifiedChallenge {
+  id: number;
   title: string;
-  description: string;
-  icon: IconName;
-  remainingDays: number;
+  challengeIcon: string;
   achievementRate: number;
-  status: "pending" | "done" | "stopped";
+  remainingDays: number;
 }
 
-interface ChallengeListProps {
-  challenges: Challenge[];
-  onChallengeToggle?: (challengeId: string) => void;
+interface CertifiedChallengeProps {
+  challenges: CertifiedChallenge[];
 }
 
-export default function ChallengeList({ challenges }: ChallengeListProps) {
+export default function CertifiedChallenge({
+  challenges,
+}: CertifiedChallengeProps) {
   const navigate = useNavigate();
 
   // 챌린지 상세 페이지로 이동
   const handleChallengeClick = (
-    challengeId: string,
+    challengeId: number,
     event: React.MouseEvent
   ) => {
     console.log("챌린지 클릭됨:", challengeId);
@@ -34,21 +33,10 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
     navigate(`/challenge/${challengeId}`);
   };
 
-  const getRemainingDays = (challenge: Challenge) => {
-    return challenge.remainingDays;
-  };
-
   if (challenges.length === 0) {
     return (
       <div className="h-40 flex items-center justify-center text-center text-gray-500 p-5">
-        <div className="flex flex-col items-center">
-          <div>아직 인증할 챌린지가 없습니다.</div>
-          <div>
-            <span className="font-bold text-primary">+ 버튼</span>을 눌러 새로운
-            챌린지를 <br />
-            등록해 보세요!
-          </div>
-        </div>
+        <div>챌린지 인증을 완료해 보세요!</div>
       </div>
     );
   }
@@ -63,9 +51,13 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
             onClick={(event) => handleChallengeClick(challenge.id, event)}
           >
             <div
-              className={`w-12 h-12 ${ICON_LIGHT_COLORS[challenge.icon]} rounded-2xl flex items-center justify-center shadow-sm`}
+              className={`w-12 h-12 ${ICON_LIGHT_COLORS[challenge.challengeIcon as IconName]} rounded-2xl flex items-center justify-center shadow-sm`}
             >
-              <ChallengeIcon name={challenge.icon} variant="color" size={20} />
+              <ChallengeIcon
+                name={challenge.challengeIcon as IconName}
+                variant="color"
+                size={20}
+              />
             </div>
             <div className="flex-1">
               <div className="text-gray-800 font-medium flex items-center gap-2">
@@ -78,11 +70,9 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
                   className="w-3 h-3"
                 />
                 <span>
-                  {challenge.status === "stopped"
-                    ? "챌린지 중단"
-                    : getRemainingDays(challenge) > 0
-                      ? `${getRemainingDays(challenge)}일`
-                      : "챌린지 종료"}
+                  {challenge.remainingDays > 0
+                    ? `${challenge.remainingDays}일`
+                    : "챌린지 종료"}
                 </span>
               </div>
             </div>
@@ -92,7 +82,7 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
                 (challenge.achievementRate / 100) * challenge.remainingDays
               )}
               totalDays={challenge.remainingDays}
-              iconName={challenge.icon}
+              iconName={challenge.challengeIcon as IconName}
               showPercentage={true}
             />
           </li>
