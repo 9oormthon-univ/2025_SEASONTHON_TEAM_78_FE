@@ -12,7 +12,7 @@ import "./index.css";
 import App from "./App";
 import Login from "./pages/Login.tsx";
 import OAuthCallback from "./pages/OAuthCallback.tsx";
-import Protected from "@/lib/routes/Protected.tsx";
+import Protected from "./utils/Protected.tsx";
 import ProfileSelect from "./pages/ProfileSelect.tsx";
 import Collection from "./pages/Collection";
 import Home from "./pages/Home";
