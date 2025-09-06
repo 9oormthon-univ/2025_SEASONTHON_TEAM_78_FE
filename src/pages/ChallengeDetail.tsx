@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import BackNavBar from "@/components/Navbar/BackNavBar";
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
 import CircularProgress from "@/components/common/CircularProgress";
@@ -9,18 +10,18 @@ import {
   ICON_LIGHT_COLORS,
 } from "@/components/Icon/challenge-color";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
+import { getChallengeDetail } from "@/lib/api/challenges";
 
 interface Challenge {
-  id: string;
   title: string;
-  description: string;
-  icon: IconName;
-  duration: number;
-  createdAt: string;
-  status: "pending" | "done" | "stopped";
-  completedDays?: number;
-  totalDays?: number;
-  stoppedAt?: string;
+  content: string;
+  challengeIcon: string;
+  remainingDays: number;
+  achievementRate: number;
+  certificationCount: number;
+  certifications: any[];
+  status: string;
+  totalChallengeDays: number;
 }
 
 interface Certification {
@@ -35,66 +36,26 @@ interface Certification {
 export default function ChallengeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [hasTodayCertification, setHasTodayCertification] = useState(false);
   const [showStopModal, setShowStopModal] = useState(false);
   const [isStopping, setIsStopping] = useState(false);
 
+  // 챌린지 상세 정보 조회
+  const {
+    data: challenge,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["challengeDetail", id],
+    queryFn: () => getChallengeDetail(id!),
+    enabled: !!id,
+  });
+
+  // 인증 데이터는 임시로 빈 배열로 설정 (나중에 API 연결)
   useEffect(() => {
-    if (id) {
-      // 로컬 스토리지에서 챌린지 찾기
-      const challenges = JSON.parse(localStorage.getItem("challenges") || "[]");
-      const foundChallenge = challenges.find((c: Challenge) => c.id === id);
-      setChallenge(foundChallenge || null);
-
-      // 해당 챌린지의 인증 데이터 가져오기
-      const allCertifications = JSON.parse(
-        localStorage.getItem("certifications") || "[]"
-      );
-      const challengeCertifications = allCertifications.filter(
-        (cert: Certification) => cert.challengeId === id
-      );
-      setCertifications(challengeCertifications);
-
-      // 오늘 인증 여부 확인
-      const today = new Date().toDateString();
-      const todayCertification = challengeCertifications.find(
-        (cert: Certification) => {
-          const certDate = new Date(cert.createdAt).toDateString();
-          return certDate === today;
-        }
-      );
-      setHasTodayCertification(!!todayCertification);
-    }
-  }, [id]);
-
-  // 페이지 포커스 시 인증 목록 새로고침
-  useEffect(() => {
-    const handleFocus = () => {
-      if (id) {
-        const allCertifications = JSON.parse(
-          localStorage.getItem("certifications") || "[]"
-        );
-        const challengeCertifications = allCertifications.filter(
-          (cert: Certification) => cert.challengeId === id
-        );
-        setCertifications(challengeCertifications);
-
-        // 오늘 인증 여부 확인
-        const today = new Date().toDateString();
-        const todayCertification = challengeCertifications.find(
-          (cert: Certification) => {
-            const certDate = new Date(cert.createdAt).toDateString();
-            return certDate === today;
-          }
-        );
-        setHasTodayCertification(!!todayCertification);
-      }
-    };
-
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
+    setCertifications([]);
+    setHasTodayCertification(false);
   }, [id]);
 
   const handleStopClick = () => {
@@ -106,18 +67,8 @@ export default function ChallengeDetail() {
 
     setIsStopping(true);
     try {
-      // 챌린지 상태를 'stopped'로 변경 (인증 데이터는 그대로 유지)
-      const challenges = JSON.parse(localStorage.getItem("challenges") || "[]");
-      const updatedChallenges = challenges.map((c: Challenge) =>
-        c.id === id
-          ? {
-              ...c,
-              status: "stopped" as const,
-              stoppedAt: new Date().toISOString(),
-            }
-          : c
-      );
-      localStorage.setItem("challenges", JSON.stringify(updatedChallenges));
+      // TODO: 챌린지 중단 API 호출
+      console.log("챌린지 중단 요청:", id);
 
       setShowStopModal(false);
       // 홈 페이지로 이동
@@ -130,31 +81,36 @@ export default function ChallengeDetail() {
     }
   };
 
-  // 남은 일자 계산 함수
+  // 남은 일자 계산 함수 (API에서 직접 받아옴)
   const getRemainingDays = (challenge: Challenge) => {
-    const startDate = new Date(challenge.createdAt);
-    const today = new Date();
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + challenge.duration);
-
-    const timeDiff = endDate.getTime() - today.getTime();
-    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-    if (daysDiff <= 0) return 0;
-    return daysDiff;
+    return challenge.remainingDays;
   };
 
-  // 진행률 데이터 계산 함수 (ChallengeList와 동일한 로직)
+  // 진행률 데이터 계산 함수 (API 데이터 사용)
   const getProgressData = (challenge: Challenge) => {
-    // 임시로 랜덤한 완료 일수 생성 (0 ~ duration 사이)
-    const completedDays =
-      challenge.completedDays ??
-      Math.floor(Math.random() * (challenge.duration + 1));
-    const totalDays = challenge.totalDays ?? challenge.duration;
+    const totalDays = challenge.totalChallengeDays || challenge.remainingDays;
+    const completedDays = Math.round(
+      (challenge.achievementRate / 100) * totalDays
+    );
     return { completedDays, totalDays };
   };
 
-  if (!challenge) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col h-screen">
+        <BackNavBar title="챌린지 상세" />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-gray-500">
+            <div className="text-lg font-medium">
+              챌린지 정보를 불러오는 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !challenge) {
     return (
       <div className="flex flex-col h-screen">
         <BackNavBar title="챌린지 상세" />
@@ -194,16 +150,17 @@ export default function ChallengeDetail() {
           {/* 챌린지 헤더 */}
           <div className="flex flex-row items-start justify-start gap-4">
             <div
-              className={`w-20 h-20 ${ICON_LIGHT_COLORS[challenge.icon]} 
+              className={`w-20 h-20 ${ICON_LIGHT_COLORS[challenge.challengeIcon as IconName]} 
               rounded-3xl flex items-center justify-center`}
             >
-              <ChallengeIcon name={challenge.icon} variant="color" size={32} />
+              <ChallengeIcon
+                name={challenge.challengeIcon as IconName}
+                variant="color"
+                size={32}
+              />
             </div>
             <div className="flex flex-col items-start justify-center">
               <h1 className="text-xl font-bold mb-2">{challenge.title}</h1>
-              <p className="max-w-[280px] text-sm text-gray-800 leading-5">
-                {challenge.description}
-              </p>
             </div>
           </div>
 
@@ -249,7 +206,7 @@ export default function ChallengeDetail() {
                 <CircularProgress
                   completedDays={getProgressData(challenge).completedDays}
                   totalDays={getProgressData(challenge).totalDays}
-                  iconName={challenge.icon}
+                  iconName={challenge.challengeIcon as IconName}
                   size={60}
                   strokeWidth={10}
                   showPercentage={false}
@@ -315,7 +272,7 @@ export default function ChallengeDetail() {
           )}
 
           {/* 챌린지 인증 버튼 */}
-          {challenge?.status === "stopped" ? (
+          {false ? (
             <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <svg
@@ -339,31 +296,18 @@ export default function ChallengeDetail() {
                 중단된 챌린지는 더 이상 인증할 수 없습니다
               </p>
             </div>
-          ) : hasTodayCertification ? (
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <span className="text-green-800 font-semibold text-lg">
-                  오늘의 인증을 완료했어요!
-                </span>
-              </div>
-              <p className="text-green-600 text-sm">내일 다시 도전해보세요</p>
-            </div>
           ) : (
-            <BoxButtonLarge onClick={() => navigate(`/challenge/${id}/today`)}>
-              오늘의 인증 추가하기
+            <BoxButtonLarge
+              onClick={
+                hasTodayCertification
+                  ? undefined
+                  : () => navigate(`/challenge/${id}/today`)
+              }
+              disabled={hasTodayCertification}
+            >
+              {hasTodayCertification
+                ? "오늘의 인증을 마쳤어요!"
+                : "오늘의 인증 추가하기"}
             </BoxButtonLarge>
           )}
         </div>

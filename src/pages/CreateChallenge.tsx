@@ -6,6 +6,7 @@ import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 import Toast from "@/components/common/Toast";
 import BackNavBar from "@/components/Navbar/BackNavBar";
 import FormConfirmModal from "@/components/common/FormConfirmModal";
+import { createChallenge } from "@/lib/api/challenges";
 
 type IconName =
   | "ball"
@@ -72,32 +73,26 @@ export default function CreateChallenge() {
     };
   }, [hasContent]);
 
-  const handleCreate = () => {
-    // 챌린지 데이터 생성(임시)
-    const newChallenge = {
-      id: Date.now().toString(),
-      title: challengeTitle,
-      description: challengeDescription,
-      icon: selectedIcon,
-      duration: challengeDuration,
-      createdAt: new Date().toISOString(),
-      status: "pending" as const,
-    };
+  const handleCreate = async () => {
+    try {
+      const challengeData = {
+        title: challengeTitle,
+        content: challengeDescription,
+        durationDays: challengeDuration,
+        challengeIcon: selectedIcon!,
+      };
 
-    // 로컬 스토리지에서 기존 챌린지 목록 가져오기(임시)
-    const existingChallenges = JSON.parse(
-      localStorage.getItem("challenges") || "[]"
-    );
+      // API 호출
+      const response = await createChallenge(challengeData);
+      console.log("챌린지 등록 완료:", response);
+      setShowToast(true);
 
-    // 새 챌린지 추가
-    const updatedChallenges = [...existingChallenges, newChallenge];
-    localStorage.setItem("challenges", JSON.stringify(updatedChallenges));
-    console.log("챌린지 등록 완료:", newChallenge);
-    setShowToast(true);
-
-    setTimeout(() => {
-      navigate("/home");
-    }, 2000);
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
+    } catch (error) {
+      console.error("챌린지 등록 오류:", error);
+    }
   };
 
   const isFormValid =
