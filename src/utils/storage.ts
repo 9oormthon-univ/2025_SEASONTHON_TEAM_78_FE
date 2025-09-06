@@ -1,13 +1,5 @@
 // 로컬 스토리지 관리 유틸리티
-
-interface Certification {
-  id: string;
-  challengeId: string;
-  title: string;
-  content: string;
-  image: string;
-  createdAt: string;
-}
+import type { Certification } from "@/types/storage";
 
 export const clearOldCertifications = () => {
   try {
