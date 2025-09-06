@@ -135,6 +135,7 @@ function CollectionPage() {
           count2={counts.heart}
           count3={counts.fire}
           onFlip={flip}
+          imageUrl={detail?.imageUrl ?? undefined}
         />
       )}
 
