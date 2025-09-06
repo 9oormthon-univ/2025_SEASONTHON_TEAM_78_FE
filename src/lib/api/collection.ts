@@ -4,6 +4,9 @@ import type {
   CollectionDetail,
 } from "@/types/collection";
 
+// 타입 re-export
+export type { CompletedChallengeRaw, CollectionDetail };
+
 export async function getCompletedChallenges(): Promise<
   CompletedChallengeRaw[]
 > {
