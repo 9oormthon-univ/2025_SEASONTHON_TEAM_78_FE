@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import TopNavBar from "@/components/Navbar/TopNavBar";
 import BottomNavBar from "@/components/Navbar/BottomNavBar";
 import FeedCard from "@/components/FeedPage/FeedCard";
 import CheerBottomSheet from "@/components/FeedPage/CheerBottomSheet";
 import FeedDetailModal from "@/components/FeedPage/FeedDetailModal";
 import { getFeed, type CertificationFeed, type Page } from "@/lib/api/feed";
+import { postCheer } from "@/lib/api/cheer";
+import Toast from "@/components/common/Toast";
 
 type DetailData = {
   imageUrl: string;
@@ -21,55 +23,77 @@ function Feed() {
   const [loading, setLoading] = useState(false);
 
   const [isCheerOpen, setCheerOpen] = useState(false);
+  const [selectedCertId, setSelectedCertId] = useState<number | null>(null);
+
   const [isDetailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState<DetailData | null>(null);
 
-  const size = 10;
-  const normalizeProfile = (url?: string | null) =>
-    url && /^https?:\/\//.test(url) ? url : "/images/default-avatar.png";
+  const [toastMessage, setToastMessage] = useState("");
+  const [isToastVisible, setIsToastVisible] = useState(false);
 
-  async function load(p = 0) {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const data: Page<CertificationFeed> = await getFeed(p, size);
-      const next = data.pageContents ?? [];
-      setItems((prev) => (p === 0 ? next : [...prev, ...next]));
-      setHasMore(data.pageNumber + 1 < data.totalPages);
-      setPage(data.pageNumber);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setIsToastVisible(true);
+  };
+
+  const size = 10;
+  const load = useCallback(
+    async (p = 0) => {
+      if (loading) return;
+      setLoading(true);
+      try {
+        const data: Page<CertificationFeed> = await getFeed(p, size);
+        const next = data.pageContents ?? [];
+        setItems((prev) => (p === 0 ? next : [...prev, ...next]));
+        setHasMore(data.pageNumber + 1 < data.totalPages);
+        setPage(data.pageNumber);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, size]
+  );
 
   useEffect(() => {
     load(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [load]);
 
+  const handleSubmitCheer = async (stickerId: number) => {
+    if (selectedCertId == null) return;
+    const map: Record<number, "CLAP" | "HEART" | "FIRE"> = {
+      1: "CLAP",
+      2: "HEART",
+      3: "FIRE",
+    };
+    try {
+      await postCheer(selectedCertId, map[stickerId]);
+      showToast("응원 완료!");
+    } catch {
+      showToast("같은 이모티콘은 두 번 누를 수 없어요!");
+    }
+  };
   return (
     <div>
       <TopNavBar title="피드" />
 
       <div className="flex flex-col items-center gap-[26px] py-6">
-        {loading && items.length === 0 && (
-          <p className="text-sm text-gray-500">불러오는 중…</p>
-        )}
-
         {items.map((it) => (
           <FeedCard
             key={it.certificationId}
             imageUrl={it.imageUrl}
             totalCheers={it.totalReactions}
-            onCheer={() => setCheerOpen(true)}
-            profileUrl={normalizeProfile(it.authorPicture)}
+            onCheer={() => {
+              setSelectedCertId(it.certificationId);
+              setCheerOpen(true);
+            }}
+            profileUrl={it.authorPicture}
             nickname={it.authorNickname}
             challengeTitle={it.title}
             content={it.content}
             onClickContent={() => {
               setDetail({
                 imageUrl: it.imageUrl,
-                profileUrl: normalizeProfile(it.authorPicture),
+                profileUrl: it.authorPicture,
                 nickname: it.authorNickname,
                 title: it.title,
                 content: it.content,
@@ -78,10 +102,6 @@ function Feed() {
             }}
           />
         ))}
-
-        {!loading && items.length === 0 && (
-          <p className="text-sm text-gray-500">표시할 피드가 없어요.</p>
-        )}
 
         {!loading && hasMore && (
           <button
@@ -92,10 +112,6 @@ function Feed() {
             더보기
           </button>
         )}
-
-        {!loading && !hasMore && items.length > 0 && (
-          <p className="text-sm text-gray-500">모든 피드를 확인했어요.</p>
-        )}
       </div>
 
       <BottomNavBar />
@@ -103,9 +119,7 @@ function Feed() {
       <CheerBottomSheet
         isOpen={isCheerOpen}
         onClose={() => setCheerOpen(false)}
-        onSubmit={(stickerId: string) => {
-          console.log("submit cheer", stickerId);
-        }}
+        onSubmit={handleSubmitCheer}
       />
 
       {detail && (
@@ -119,6 +133,11 @@ function Feed() {
           content={detail.content}
         />
       )}
+      <Toast
+        message={toastMessage}
+        isVisible={isToastVisible}
+        onClose={() => setIsToastVisible(false)}
+      />
     </div>
   );
 }

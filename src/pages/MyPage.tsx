@@ -9,13 +9,13 @@ function Divider() {
 }
 
 const STICKER_SRC: Record<string, string> = {
-  "emoji-1": "/images/emoji-wow.webp",
-  "emoji-2": "/images/emoji-cool.webp",
-  "emoji-3": "/images/emoji-heart.webp",
+  "1": "/images/emoji-wow.webp",
+  "2": "/images/emoji-cool.webp",
+  "3": "/images/emoji-heart.webp",
 };
 
 const isStickerId = (v?: string | null) =>
-  typeof v === "string" && /^emoji-\d+$/.test(v);
+  typeof v === "string" && /^\d+$/.test(v);
 
 function resolveAvatarSrc(picture?: string | null) {
   if (isStickerId(picture))

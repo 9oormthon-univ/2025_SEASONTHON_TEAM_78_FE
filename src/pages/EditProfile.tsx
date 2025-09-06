@@ -5,18 +5,21 @@ import { useMe } from "@/hooks/useMe";
 import { updateMyProfile } from "@/lib/api/userProfile";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Toast from "@/components/common/Toast";
+import { useNavigate } from "react-router-dom";
 
 type Sticker = { id: string; src: string; alt: string };
 
 const STICKERS: Sticker[] = [
-  { id: "emoji-1", src: "/images/emoji-wow.webp", alt: "wow" },
-  { id: "emoji-2", src: "/images/emoji-cool.webp", alt: "cool" },
-  { id: "emoji-3", src: "/images/emoji-heart.webp", alt: "heart" },
+  { id: "1", src: "/images/emoji-wow.webp", alt: "wow" },
+  { id: "2", src: "/images/emoji-cool.webp", alt: "cool" },
+  { id: "3", src: "/images/emoji-heart.webp", alt: "heart" },
 ];
 
 function EditProfile() {
   const inputRef = useRef<HTMLInputElement>(null);
   const MAX_LEN = 11;
+  const navigate = useNavigate();
+  const navTimerRef = useRef<number | null>(null);
 
   // 내 프로필
   const { data: me, isLoading, error } = useMe();
@@ -35,6 +38,14 @@ function EditProfile() {
     }
   }, [me]);
 
+  useEffect(() => {
+    return () => {
+      if (navTimerRef.current) {
+        clearTimeout(navTimerRef.current);
+      }
+    };
+  }, []);
+
   // 변경 여부
   const isChanged = useMemo(() => {
     if (!me) return false;
@@ -50,6 +61,9 @@ function EditProfile() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me"] });
       setIsToastVisible(true);
+      navTimerRef.current = window.setTimeout(() => {
+        navigate("/my-page");
+      }, 900);
     },
     onError: () => {
       alert("수정에 실패했습니다.");
