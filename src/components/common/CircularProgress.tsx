@@ -1,4 +1,7 @@
-import { type IconName, ICON_COLOR_CODES } from "@/types/challenge";
+import {
+  type IconName,
+  ICON_COLOR_CODES,
+} from "@/components/Icon/challenge-color";
 
 interface CircularProgressProps {
   completedDays: number; // API에서 받아올 성공한 일수
@@ -39,8 +42,8 @@ export default function CircularProgress({
   const strokeDashoffset =
     circumference - (clampedPercentage / 100) * circumference;
 
-  const iconColor = ICON_COLOR_CODES[iconName]?.icon || "stroke-blue-500";
-  const bgColor = ICON_COLOR_CODES[iconName]?.background || "stroke-blue-100";
+  const iconColor = ICON_COLOR_CODES[iconName]?.icon || "#3B82F6";
+  const bgColor = ICON_COLOR_CODES[iconName]?.background || "#DBEAFE";
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
@@ -50,23 +53,22 @@ export default function CircularProgress({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="currentColor"
+          stroke={bgColor}
           strokeWidth={strokeWidth}
           fill="none"
-          className={bgColor}
         />
         {/* 진행률 원 */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="currentColor"
+          stroke={iconColor}
           strokeWidth={strokeWidth}
           fill="none"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="butt"
-          className={`transition-all duration-300 ${iconColor}`}
+          className="transition-all duration-300"
         />
       </svg>
       {/* 중앙 텍스트 */}

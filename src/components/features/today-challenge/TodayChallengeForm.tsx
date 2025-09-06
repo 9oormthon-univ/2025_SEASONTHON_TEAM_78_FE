@@ -444,7 +444,7 @@ export default function TodayChallengeForm({
         isOpen={showConfirmModal}
         onClose={handleCloseModal}
         onConfirm={handleConfirmCancel}
-        title={mode === "edit" ? "인증" : "인증"}
+        title="인증"
       />
     </div>
   );

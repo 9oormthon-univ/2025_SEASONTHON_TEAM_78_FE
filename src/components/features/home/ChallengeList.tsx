@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-import { type IconName, ICON_LIGHT_COLORS } from "@/types/challenge";
+import {
+  type IconName,
+  ICON_LIGHT_COLORS,
+} from "@/components/Icon/challenge-color";
 import CircularProgress from "@/components/common/CircularProgress";
 
 type Tab = "pending" | "done";
@@ -12,9 +15,10 @@ interface Challenge {
   icon: IconName;
   duration: number;
   createdAt: string;
-  status: "pending" | "done";
+  status: "pending" | "done" | "stopped";
   completedDays?: number; // 완료한 일수 (임시)
   totalDays?: number; // 전체 일수 (임시)
+  stoppedAt?: string;
 }
 
 interface ChallengeListProps {
@@ -94,7 +98,14 @@ export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
               <ChallengeIcon name={challenge.icon} variant="color" size={20} />
             </div>
             <div className="flex-1">
-              <div className="text-gray-800 font-medium">{challenge.title}</div>
+              <div className="text-gray-800 font-medium flex items-center gap-2">
+                {challenge.title}
+                {challenge.status === "stopped" && (
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    중단됨
+                  </span>
+                )}
+              </div>
               <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
                 <img
                   src="/images/timer-icon.svg"
@@ -102,9 +113,11 @@ export default function ChallengeList({ tab, challenges }: ChallengeListProps) {
                   className="w-3 h-3"
                 />
                 <span>
-                  {getRemainingDays(challenge) > 0
-                    ? `${getRemainingDays(challenge)}일`
-                    : "챌린지 종료"}
+                  {challenge.status === "stopped"
+                    ? "챌린지 중단"
+                    : getRemainingDays(challenge) > 0
+                      ? `${getRemainingDays(challenge)}일`
+                      : "챌린지 종료"}
                 </span>
               </div>
             </div>

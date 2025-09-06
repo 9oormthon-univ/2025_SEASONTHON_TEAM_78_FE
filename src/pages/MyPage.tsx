@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
-import TopNavBar from '@/components/Navbar/TopNavBar';
-import BottomNavBar from '@/components/Navbar/BottomNavBar';
+import { Link } from "react-router-dom";
+import TopNavBar from "@/components/Navbar/TopNavBar";
+import BottomNavBar from "@/components/Navbar/BottomNavBar";
+import LogoutButton from "@/components/features/auth/LogoutButton";
 
 /* interface MyPageProps {
   userName: string; //카톡 이름
@@ -14,8 +15,8 @@ function Divider() {
 
 function MyPage() {
   //api 연결전 하드코딩
-  const userName = '미르미';
-  const avatarUrl = '/images/cat1.webp';
+  const userName = "미르미";
+  const avatarUrl = "/images/cat1.webp";
   return (
     <>
       <TopNavBar title="마이" />
@@ -63,6 +64,14 @@ function MyPage() {
           >
             회원 정보 수정
           </Link>
+        </section>
+
+        <Divider />
+
+        <section className="flex flex-col gap-2">
+          <LogoutButton className="block py-3 text-base font-medium text-left">
+            로그아웃
+          </LogoutButton>
         </section>
       </div>
 
