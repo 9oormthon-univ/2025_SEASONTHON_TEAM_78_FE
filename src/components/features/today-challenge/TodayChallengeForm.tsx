@@ -4,27 +4,7 @@ import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 import Toast from "@/components/common/Toast";
 import FormConfirmModal from "@/components/common/FormConfirmModal";
 import { clearOldCertifications, checkStorageQuota } from "@/utils/storage";
-
-interface Challenge {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  duration: number;
-  createdAt: string;
-  status: "pending" | "done";
-  completedDays?: number;
-  totalDays?: number;
-}
-
-interface Certification {
-  id: string;
-  challengeId: string;
-  title: string;
-  content: string;
-  image: string;
-  createdAt: string;
-}
+import type { Challenge, Certification } from "@/types/today-challenge";
 
 interface TodayChallengeFormProps {
   challengeId: string;
