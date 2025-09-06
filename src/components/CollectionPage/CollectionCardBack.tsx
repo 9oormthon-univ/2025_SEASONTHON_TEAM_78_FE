@@ -15,6 +15,7 @@ interface CollectionCardBackProps {
   count2?: number; // 이모티콘2
   count3?: number; // 이모티콘3
   onFlip?: () => void;
+  imageUrl?: string | null;
 }
 
 function CollectionCardBack({
@@ -27,6 +28,7 @@ function CollectionCardBack({
   count2 = 0,
   count3 = 0,
   onFlip,
+  imageUrl,
 }: CollectionCardBackProps) {
   if (!isOpen) return null;
 
@@ -67,15 +69,25 @@ function CollectionCardBack({
           tabIndex={0}
           onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onFlip?.()}
         >
-          {/*  챌린지 첫 인증샷 넣을예정 */}
-          <div
-            className="
-              h-[311px] w-[311px] rounded-[40px] p-6
-              bg-white/40
-              [background-image:conic-gradient(#e5e7eb_25%,transparent_0_50%,#e5e7eb_0_75%,transparent_0)]
-              [background-size:20px_20px]
-            "
-          />
+          <div className="relative h-[311px] w-[311px] overflow-hidden rounded-[40px]">
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="인증 이미지"
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <div
+                className="
+                  h-full w-full p-6
+                  bg-white/40
+                  [background-image:conic-gradient(#e5e7eb_25%,transparent_0_50%,#e5e7eb_0_75%,transparent_0)]
+                  [background-size:20px_20px]
+                "
+              />
+            )}
+          </div>
 
           <div className="flex w-[311px] flex-col items-center gap-2">
             <p className="text-xl font-bold text-[#161616]">{title}</p>
