@@ -1,30 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 import Toast from "@/components/common/Toast";
 import FormConfirmModal from "@/components/common/FormConfirmModal";
-import { clearOldCertifications, checkStorageQuota } from "@/utils/storage";
-
-interface Challenge {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  duration: number;
-  createdAt: string;
-  status: "pending" | "done";
-  completedDays?: number;
-  totalDays?: number;
-}
-
-interface Certification {
-  id: string;
-  challengeId: string;
-  title: string;
-  content: string;
-  image: string;
-  createdAt: string;
-}
+import { createCertification } from "@/lib/api/certifications";
+import type { Challenge, Certification } from "@/types/today-challenge";
 
 interface TodayChallengeFormProps {
   challengeId: string;
@@ -42,13 +23,15 @@ export default function TodayChallengeForm({
   onSuccess,
 }: TodayChallengeFormProps) {
   const navigate = useNavigate();
-  const [, setImage] = useState<File | null>(null);
+  const queryClient = useQueryClient();
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasTodayCertification, setHasTodayCertification] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 수정 모드일 때 기존 데이터로 초기화
   useEffect(() => {
@@ -59,20 +42,11 @@ export default function TodayChallengeForm({
     }
   }, [mode, certification]);
 
-  // 오늘 인증 여부 확인 (생성 모드에서만)
+  // 오늘 인증 여부 확인 (생성 모드에서만) - API에서 확인하도록 변경 예정
   useEffect(() => {
     if (mode === "create" && challengeId) {
-      const allCertifications = JSON.parse(
-        localStorage.getItem("certifications") || "[]"
-      );
-      const today = new Date().toDateString();
-      const todayCertification = allCertifications.find(
-        (cert: Certification) => {
-          const certDate = new Date(cert.createdAt).toDateString();
-          return cert.challengeId === challengeId && certDate === today;
-        }
-      );
-      setHasTodayCertification(!!todayCertification);
+      // TODO: API에서 오늘 인증 여부 확인
+      setHasTodayCertification(false);
     }
   }, [mode, challengeId]);
 
@@ -113,40 +87,11 @@ export default function TodayChallengeForm({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImage(file);
+      setImageFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
-        // 이미지 크기 압축
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-
-          // 최대 크기 설정 (300x300)
-          const maxSize = 300;
-          let { width, height } = img;
-
-          if (width > height) {
-            if (width > maxSize) {
-              height = (height * maxSize) / width;
-              width = maxSize;
-            }
-          } else {
-            if (height > maxSize) {
-              width = (width * maxSize) / height;
-              height = maxSize;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          ctx?.drawImage(img, 0, 0, width, height);
-          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7); // 70% 품질
-          setImagePreview(compressedDataUrl);
-        };
-        img.src = result;
+        setImagePreview(result);
       };
       reader.readAsDataURL(file);
     }
@@ -163,69 +108,30 @@ export default function TodayChallengeForm({
   };
 
   // 폼 유효성 검사
-  const isFormValid = title.trim().length > 0 && content.trim().length > 0;
+  const isFormValid =
+    title.trim().length > 0 && content.trim().length > 0 && imageFile !== null;
 
-  // 컴포넌트 마운트 시 스토리지 정리
-  useEffect(() => {
-    checkStorageQuota();
-  }, []);
-
-  const handleSubmit = () => {
-    console.log("handleSubmit called", { isFormValid, title, content, mode });
-
-    if (!isFormValid) {
-      console.log("Form is not valid");
+  const handleSubmit = async () => {
+    if (!isFormValid || !imageFile) {
       return;
     }
 
+    setIsSubmitting(true);
     try {
-      // 기존 데이터 정리
-      const cleanedCertifications = clearOldCertifications();
-
-      // 인증 데이터 생성
-      const certificationData = {
-        id:
-          mode === "edit" && certification
-            ? certification.id
-            : Date.now().toString(),
-        challengeId: challengeId,
+      // API 호출
+      await createCertification(challengeId, imageFile, {
         title: title.trim(),
         content: content.trim(),
-        image: imagePreview,
-        createdAt:
-          mode === "edit" && certification
-            ? certification.createdAt
-            : new Date().toISOString(),
-      };
+      });
 
-      console.log("Certification data:", certificationData);
-
-      if (mode === "edit" && certification) {
-        // 수정 모드: 기존 인증 업데이트
-        const updatedCertifications = cleanedCertifications.map(
-          (cert: Certification) =>
-            cert.id === certification.id ? certificationData : cert
-        );
-        localStorage.setItem(
-          "certifications",
-          JSON.stringify(updatedCertifications)
-        );
-        console.log("Updated certifications:", updatedCertifications);
-      } else {
-        // 생성 모드: 새 인증 추가
-        const newCertifications = [...cleanedCertifications, certificationData];
-        localStorage.setItem(
-          "certifications",
-          JSON.stringify(newCertifications)
-        );
-        console.log("Added new certification:", newCertifications);
-      }
+      // 관련 쿼리 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["challengeDetail"] });
+      queryClient.invalidateQueries({ queryKey: ["notCertifiedChallenges"] });
+      queryClient.invalidateQueries({ queryKey: ["certifiedChallenges"] });
 
       setShowToast(true);
-      console.log("Toast shown");
 
       setTimeout(() => {
-        console.log("Timeout reached, navigating...");
         if (onSuccess) {
           onSuccess();
         } else {
@@ -233,8 +139,10 @@ export default function TodayChallengeForm({
         }
       }, 2000);
     } catch (error) {
-      console.error("Error saving certification:", error);
-      alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("인증 등록 오류:", error);
+      alert("인증 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -428,8 +336,15 @@ export default function TodayChallengeForm({
       </div>
 
       {/* 작성 완료 버튼 */}
-      <BoxButtonLarge onClick={handleSubmit} disabled={!isFormValid}>
-        {mode === "edit" ? "수정 완료" : "작성 완료"}
+      <BoxButtonLarge
+        onClick={handleSubmit}
+        disabled={!isFormValid || isSubmitting}
+      >
+        {isSubmitting
+          ? "등록 중..."
+          : mode === "edit"
+            ? "수정 완료"
+            : "작성 완료"}
       </BoxButtonLarge>
 
       <Toast

@@ -23,10 +23,8 @@ export default function KakaoLoginButton({ onSuccess }: Props) {
       `${apiBase}/oauth2/authorization/${provider}` +
       `?redirect_uri=${encodeURIComponent(redirect)}`;
 
-    console.log("➡️ Redirect to:", loginUrl);
-
     if (onSuccess) {
-      console.log("onSuccess 콜백이 등록되었습니다.");
+      // onSuccess 콜백이 등록되었습니다.
     }
 
     window.location.assign(loginUrl); // 실제 이동

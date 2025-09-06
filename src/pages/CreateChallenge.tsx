@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import IconSelector from "@/components/features/create-challenge/IconSelector";
 import ChallengeForm from "@/components/features/create-challenge/ChallengeForm";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 import Toast from "@/components/common/Toast";
 import BackNavBar from "@/components/Navbar/BackNavBar";
 import FormConfirmModal from "@/components/common/FormConfirmModal";
+import { createChallenge } from "@/lib/api/challenges";
 
 type IconName =
   | "ball"
@@ -23,6 +25,7 @@ type IconName =
 
 export default function CreateChallenge() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [challengeTitle, setChallengeTitle] = useState("");
   const [challengeDescription, setChallengeDescription] = useState("");
   const [selectedIcon, setSelectedIcon] = useState<IconName | null>(null);
@@ -72,32 +75,30 @@ export default function CreateChallenge() {
     };
   }, [hasContent]);
 
-  const handleCreate = () => {
-    // 챌린지 데이터 생성(임시)
-    const newChallenge = {
-      id: Date.now().toString(),
-      title: challengeTitle,
-      description: challengeDescription,
-      icon: selectedIcon,
-      duration: challengeDuration,
-      createdAt: new Date().toISOString(),
-      status: "pending" as const,
-    };
+  const handleCreate = async () => {
+    try {
+      const challengeData = {
+        title: challengeTitle,
+        content: challengeDescription,
+        durationDays: challengeDuration,
+        challengeIcon: selectedIcon!,
+      };
 
-    // 로컬 스토리지에서 기존 챌린지 목록 가져오기(임시)
-    const existingChallenges = JSON.parse(
-      localStorage.getItem("challenges") || "[]"
-    );
+      // API 호출
+      await createChallenge(challengeData);
 
-    // 새 챌린지 추가
-    const updatedChallenges = [...existingChallenges, newChallenge];
-    localStorage.setItem("challenges", JSON.stringify(updatedChallenges));
-    console.log("챌린지 등록 완료:", newChallenge);
-    setShowToast(true);
+      // 관련 쿼리 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["notCertifiedChallenges"] });
+      queryClient.invalidateQueries({ queryKey: ["certifiedChallenges"] });
 
-    setTimeout(() => {
-      navigate("/home");
-    }, 2000);
+      setShowToast(true);
+
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
+    } catch (error) {
+      console.error("챌린지 등록 오류:", error);
+    }
   };
 
   const isFormValid =
