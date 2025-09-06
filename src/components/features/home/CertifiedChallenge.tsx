@@ -7,12 +7,13 @@ import {
 import CircularProgress from "@/components/common/CircularProgress";
 import type { Challenge } from "@/types/challenge";
 
-interface ChallengeListProps {
+interface CertifiedChallengeProps {
   challenges: Challenge[];
-  onChallengeToggle?: (challengeId: string) => void;
 }
 
-export default function ChallengeList({ challenges }: ChallengeListProps) {
+export default function CertifiedChallenge({
+  challenges,
+}: CertifiedChallengeProps) {
   const navigate = useNavigate();
 
   // 챌린지 상세 페이지로 이동
@@ -20,12 +21,9 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
     challengeId: number,
     event: React.MouseEvent
   ) => {
+    console.log("챌린지 클릭됨:", challengeId);
     event.stopPropagation();
     navigate(`/challenge/${challengeId}`);
-  };
-
-  const getRemainingDays = (challenge: Challenge) => {
-    return challenge.remainingDays;
   };
 
   // 진행률 계산
@@ -43,14 +41,7 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
   if (challenges.length === 0) {
     return (
       <div className="h-40 flex items-center justify-center text-center text-gray-500 p-5">
-        <div className="flex flex-col items-center">
-          <div>아직 인증할 챌린지가 없습니다.</div>
-          <div>
-            <span className="font-bold text-primary">+ 버튼</span>을 눌러 새로운
-            챌린지를 <br />
-            등록해 보세요!
-          </div>
-        </div>
+        <div>챌린지 인증을 완료해 보세요!</div>
       </div>
     );
   }
@@ -84,8 +75,8 @@ export default function ChallengeList({ challenges }: ChallengeListProps) {
                   className="w-3 h-3"
                 />
                 <span>
-                  {getRemainingDays(challenge) > 0
-                    ? `${getRemainingDays(challenge)}일`
+                  {challenge.remainingDays > 0
+                    ? `${challenge.remainingDays}일`
                     : "챌린지 종료"}
                 </span>
               </div>

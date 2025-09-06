@@ -1,50 +1,20 @@
-import { useState, useEffect } from "react";
-import { type IconName, ICON_COLORS } from "@/components/Icon/challenge-color";
-
-type Challenge = {
-  id: string;
-  title: string;
-  description: string;
-  icon: IconName;
-  duration: number;
-  createdAt: string;
-  status: "pending" | "done";
-};
+import { ICON_COLORS } from "@/components/Icon/challenge-color";
+import type { CertifiedChallengeResponse } from "@/types/challenge";
 
 interface WeeklyCalendarProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
+  weeklyData?: CertifiedChallengeResponse["data"];
   className?: string;
 }
 
 export default function WeeklyCalendar({
   selectedDate,
   onDateSelect,
+  weeklyData,
   className = "",
 }: WeeklyCalendarProps) {
   const today = new Date();
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
-
-  // 로컬 스토리지에서 챌린지 데이터 로드
-  useEffect(() => {
-    const storedChallenges = JSON.parse(
-      localStorage.getItem("challenges") || "[]"
-    );
-    setChallenges(storedChallenges);
-  }, []);
-
-  // 페이지 포커스 시 데이터 새로고침
-  useEffect(() => {
-    const handleFocus = () => {
-      const storedChallenges = JSON.parse(
-        localStorage.getItem("challenges") || "[]"
-      );
-      setChallenges(storedChallenges);
-    };
-
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, []);
 
   // 주간 캘린더 데이터 생성
   const getWeekDates = () => {
@@ -74,14 +44,24 @@ export default function WeeklyCalendar({
 
   // 특정 날짜의 완료된 챌린지 아이콘들 가져오기 (최대 3개)
   const getCompletedChallengeIcons = (date: Date) => {
-    const dateStr = date.toDateString();
-    const dayChallenges = challenges.filter((challenge) => {
-      const challengeDate = new Date(challenge.createdAt).toDateString();
-      return challengeDate === dateStr && challenge.status === "done";
-    });
+    if (!weeklyData?.weeklyIcons) return [];
 
-    // 최대 3개까지 아이콘 반환
-    return dayChallenges.slice(0, 3).map((challenge) => challenge.icon);
+    const dayNames = [
+      "SUNDAY",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY",
+      "SATURDAY",
+    ];
+    const dayIndex = date.getDay();
+    const dayName = dayNames[dayIndex];
+
+    return (
+      weeklyData.weeklyIcons[dayName as keyof typeof weeklyData.weeklyIcons] ||
+      []
+    );
   };
 
   return (
@@ -130,7 +110,7 @@ export default function WeeklyCalendar({
                     {/* 위쪽 아이콘 (1개) */}
                     {completedIcons[0] && (
                       <div
-                        className={`w-2.5 h-2.5 rounded-full ${ICON_COLORS[completedIcons[0]]} ${
+                        className={`w-2.5 h-2.5 rounded-full ${ICON_COLORS[completedIcons[0] as keyof typeof ICON_COLORS] || "bg-gray-400"} ${
                           isSelected ? "opacity-80" : ""
                         } shadow-sm`}
                       />
@@ -141,7 +121,7 @@ export default function WeeklyCalendar({
                         {completedIcons.slice(1, 3).map((icon, index) => (
                           <div
                             key={index}
-                            className={`w-2.5 h-2.5 rounded-full ${ICON_COLORS[icon]} ${
+                            className={`w-2.5 h-2.5 rounded-full ${ICON_COLORS[icon as keyof typeof ICON_COLORS] || "bg-gray-400"} ${
                               isSelected ? "opacity-80" : ""
                             } shadow-sm`}
                           />

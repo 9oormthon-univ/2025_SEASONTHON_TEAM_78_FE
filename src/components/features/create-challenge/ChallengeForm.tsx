@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import ChallengeIcon from "@/components/Icon/ChallengeIcon";
-import { CHALLENGE_SUGGESTIONS, type ChallengeSuggestion } from "@/types/temp";
+import {
+  CHALLENGE_SUGGESTIONS,
+  type ChallengeSuggestion,
+} from "@/types/challenge-suggestion";
 import { ICON_LIGHT_COLORS } from "@/components/Icon/challenge-color";
 
 interface ChallengeFormProps {

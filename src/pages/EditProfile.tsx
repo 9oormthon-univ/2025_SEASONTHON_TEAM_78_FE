@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 type Sticker = { id: string; src: string; alt: string };
 
+
 const STICKERS: Sticker[] = [
   { id: "1", src: "/images/emoji-wow.webp", alt: "wow" },
   { id: "2", src: "/images/emoji-cool.webp", alt: "cool" },
