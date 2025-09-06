@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import IconSelector from "@/components/features/create-challenge/IconSelector";
 import ChallengeForm from "@/components/features/create-challenge/ChallengeForm";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
@@ -24,6 +25,7 @@ type IconName =
 
 export default function CreateChallenge() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [challengeTitle, setChallengeTitle] = useState("");
   const [challengeDescription, setChallengeDescription] = useState("");
   const [selectedIcon, setSelectedIcon] = useState<IconName | null>(null);
@@ -84,7 +86,11 @@ export default function CreateChallenge() {
 
       // API 호출
       const response = await createChallenge(challengeData);
-      console.log("챌린지 등록 완료:", response);
+
+      // 관련 쿼리 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["notCertifiedChallenges"] });
+      queryClient.invalidateQueries({ queryKey: ["certifiedChallenges"] });
+
       setShowToast(true);
 
       setTimeout(() => {

@@ -1,13 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import BackNavBar from "@/components/Navbar/BackNavBar";
 import FormConfirmModal from "@/components/common/FormConfirmModal";
 import ChallengeHeader from "@/components/features/challenge-detail/ChallengeHeader";
 import ChallengeStats from "@/components/features/challenge-detail/ChallengeStats";
 import CertificationList from "@/components/features/challenge-detail/CertificationList";
 import ChallengeActionButton from "@/components/features/challenge-detail/ChallengeActionButton";
-import { getChallengeDetail } from "@/lib/api/challenges";
+import { getChallengeDetail, deleteChallenge } from "@/lib/api/challenges";
 import type { ChallengeDetailResponse } from "@/types/challenge";
 
 // API 응답의 data 부분을 위한 타입
@@ -29,10 +29,11 @@ interface Certification {
 export default function ChallengeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [hasTodayCertification, setHasTodayCertification] = useState(false);
-  const [showStopModal, setShowStopModal] = useState(false);
-  const [isStopping, setIsStopping] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 챌린지 상세 정보 조회
   const {
@@ -52,26 +53,30 @@ export default function ChallengeDetail() {
     setHasTodayCertification(false);
   }, [challenge]);
 
-  const handleStopClick = () => {
-    setShowStopModal(true);
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
   };
 
-  const handleStop = async () => {
+  const handleDelete = async () => {
     if (!id) return;
 
-    setIsStopping(true);
+    setIsDeleting(true);
     try {
-      // TODO: 챌린지 중단 API 호출
-      console.log("챌린지 중단 요청:", id);
+      await deleteChallenge(id);
 
-      setShowStopModal(false);
+      // 관련 쿼리 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["notCertifiedChallenges"] });
+      queryClient.invalidateQueries({ queryKey: ["certifiedChallenges"] });
+      queryClient.invalidateQueries({ queryKey: ["challengeDetail"] });
+
+      setShowDeleteModal(false);
       // 홈 페이지로 이동
       navigate("/home");
     } catch (error) {
-      console.error("챌린지 중단 중 오류가 발생했습니다:", error);
-      alert("챌린지 중단 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("챌린지 삭제 중 오류가 발생했습니다:", error);
+      alert("챌린지 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
-      setIsStopping(false);
+      setIsDeleting(false);
     }
   };
 
@@ -90,9 +95,6 @@ export default function ChallengeDetail() {
     );
   }
 
-  console.log("challenge", challenge);
-  console.log("isError", isError);
-  console.log("id", id);
   if (isError || !challenge) {
     return (
       <div className="flex flex-col h-screen">
@@ -126,7 +128,7 @@ export default function ChallengeDetail() {
             />
           </svg>
         }
-        onActionClick={handleStopClick}
+        onActionClick={handleDeleteClick}
       />
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-6">
@@ -144,19 +146,19 @@ export default function ChallengeDetail() {
         </div>
       </div>
 
-      {/* 챌린지 중단 확인 모달 */}
+      {/* 챌린지 삭제 확인 모달 */}
       <FormConfirmModal
-        isOpen={showStopModal}
-        onClose={() => setShowStopModal(false)}
-        onConfirm={handleStop}
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
         variant="custom"
-        title="챌린지"
-        message={`정말로 이 챌린지를 중단하시겠습니까?
-                  중단된 챌린지는 더 이상 인증할 수 없지만,
-                  기존 인증 데이터는 그대로 보존됩니다.`}
-        confirmText="중단"
+        title="챌린지 삭제"
+        message={`정말로 이 챌린지를 삭제하시겠습니까?
+                  삭제된 챌린지는 복구할 수 없으며,
+                  모든 인증 데이터가 함께 삭제됩니다.`}
+        confirmText="삭제"
         cancelText="취소"
-        isLoading={isStopping}
+        isLoading={isDeleting}
         confirmButtonColor="red"
       />
     </div>

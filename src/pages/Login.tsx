@@ -34,8 +34,6 @@ export default function Login() {
   }, [userData, isLoading, navigate]);
 
   const handleSuccess = async (at: string) => {
-    console.log("[login] accessToken:", at);
-
     await qc.invalidateQueries({ queryKey: ["me"] });
     navigate(from, { replace: true });
   };

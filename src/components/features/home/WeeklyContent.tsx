@@ -3,6 +3,11 @@ import WeeklyCalendar from "./WeeklyCalendar";
 import ChallengeToggle from "./ChallengeToggle";
 import ChallengeList from "./ChallengeList";
 import CertifiedChallenge from "./CertifiedChallenge";
+import {
+  getNotCertifiedChallenges,
+  getCertifiedChallenges,
+} from "@/lib/api/challenges";
+import { useQuery } from "@tanstack/react-query";
 interface WeeklyContentProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
@@ -16,44 +21,40 @@ export default function WeeklyContent({
 }: WeeklyContentProps) {
   const [tab, setTab] = useState<Tab>("pending");
 
-  // 임시 데이터
-  const activeChallenges = [
-    {
-      id: 1,
-      title: "매일 물 마시기",
-      challengeIcon: "water",
-      achievementRate: 80,
-      remainingDays: 5,
-    },
-    {
-      id: 2,
-      title: "매일 운동하기",
-      challengeIcon: "run",
-      achievementRate: 60,
-      remainingDays: 10,
-    },
-  ];
+  // 사용할 날짜: 한국 시간대 고려하여 YYYY-MM-DD 형식으로 변환
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-  const certifiedChallenges = [
-    {
-      id: 3,
-      title: "매일 독서하기",
-      challengeIcon: "book",
-      achievementRate: 100,
-      remainingDays: 0,
-    },
-    {
-      id: 4,
-      title: "매일 정리하기",
-      challengeIcon: "broom",
-      achievementRate: 90,
-      remainingDays: 0,
-    },
-  ];
+  const dateToUse = formatDate(selectedDate);
 
-  const isLoading = false;
-  const isError = false;
-  const isCertifiedError = false;
+  // 미인증 챌린지 조회
+  const {
+    data: activeChallenges,
+    isLoading: activeLoading,
+    isError: activeError,
+  } = useQuery({
+    queryKey: ["notCertifiedChallenges", dateToUse],
+    queryFn: () => getNotCertifiedChallenges({ date: dateToUse }),
+  });
+
+  // 인증 완료 챌린지 조회
+  const {
+    data: certifiedChallenges,
+    isLoading: certifiedLoading,
+    isError: certifiedError,
+  } = useQuery({
+    queryKey: ["certifiedChallenges", dateToUse],
+    queryFn: () => getCertifiedChallenges({ date: dateToUse }),
+    enabled: tab === "done",
+  });
+
+  const isLoading = activeLoading || certifiedLoading;
+  const isError = activeError || certifiedError;
+  const isCertifiedError = tab === "done" && certifiedError;
 
   // 탭 변경 핸들러
   const handleTabChange = (newTab: Tab) => {
@@ -67,6 +68,7 @@ export default function WeeklyContent({
           <WeeklyCalendar
             selectedDate={selectedDate}
             onDateSelect={onDateSelect}
+            weeklyData={activeChallenges}
           />
           <ChallengeToggle value={tab} onChange={handleTabChange} />
         </div>
@@ -85,6 +87,7 @@ export default function WeeklyContent({
           <WeeklyCalendar
             selectedDate={selectedDate}
             onDateSelect={onDateSelect}
+            weeklyData={activeChallenges}
           />
           <ChallengeToggle value={tab} onChange={handleTabChange} />
         </div>
@@ -108,14 +111,17 @@ export default function WeeklyContent({
         <WeeklyCalendar
           selectedDate={selectedDate}
           onDateSelect={onDateSelect}
+          weeklyData={activeChallenges}
         />
         <ChallengeToggle value={tab} onChange={handleTabChange} />
       </div>
       <div className="flex-1 overflow-hidden">
         {tab === "pending" ? (
-          <ChallengeList challenges={activeChallenges || []} />
+          <ChallengeList challenges={activeChallenges?.challenges || []} />
         ) : (
-          <CertifiedChallenge challenges={certifiedChallenges || []} />
+          <CertifiedChallenge
+            challenges={certifiedChallenges?.challenges || []}
+          />
         )}
       </div>
     </div>
