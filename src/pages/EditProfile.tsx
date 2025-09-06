@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import BackHeader from "@/components/Navbar/BackNavBar";
 import BoxButtonLarge from "@/components/common/BoxButtonLarge";
-
-type Sticker = { id: string; src: string; alt: string };
+import type { Sticker } from "@/types/profile";
 
 const STICKERS: Sticker[] = [
   { id: "emoji-1", src: "/images/emoji-wow.webp", alt: "wow" },

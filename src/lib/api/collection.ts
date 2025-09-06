@@ -1,24 +1,8 @@
 import { api } from "./common";
-import type { IconName } from "@/components/Icon/ChallengeIcon";
-
-export interface CompletedChallengeRaw {
-  id: number;
-  title: string;
-  endDate: string;
-  challengeIcon: IconName; // 백엔드가 "water" 같은 문자열 반환 → IconName으로 사용
-}
-
-/** 컬렉션 뒷면 카드 응답 타입 */
-export interface CollectionDetail {
-  title: string;
-  content: string;
-  challengeIcon: IconName;
-  imageUrl: string | null;
-  reactions: Array<{
-    emojiType: "CLAP" | "HEART" | "FIRE" | string;
-    count: number;
-  }>;
-}
+import type {
+  CompletedChallengeRaw,
+  CollectionDetail,
+} from "@/types/collection";
 
 export async function getCompletedChallenges(): Promise<
   CompletedChallengeRaw[]
