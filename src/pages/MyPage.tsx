@@ -79,7 +79,7 @@ function MyPage() {
             내 챌린지
           </p>
           <Link
-            to="/my/ongoing"
+            to="/active-challenge"
             className="block py-3 text-base font-medium text-black"
           >
             현재 진행중인 챌린지
