@@ -4,6 +4,7 @@ import BoxButtonLarge from "@/components/common/BoxButtonLarge";
 import { useMe } from "@/hooks/useMe";
 import { updateMyProfile } from "@/lib/api/userProfile";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Toast from "@/components/common/Toast";
 
 type Sticker = { id: string; src: string; alt: string };
 
@@ -23,6 +24,8 @@ function EditProfile() {
   // 상태
   const [nickname, setNickname] = useState<string>("");
   const [selected, setSelected] = useState<string>("");
+
+  const [isToastVisible, setIsToastVisible] = useState(false);
 
   // 초기 세팅
   useEffect(() => {
@@ -46,7 +49,7 @@ function EditProfile() {
       updateMyProfile({ nickname: nickname.trim(), picture: selected }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me"] });
-      alert("프로필이 수정되었습니다!");
+      setIsToastVisible(true);
     },
     onError: () => {
       alert("수정에 실패했습니다.");
@@ -134,6 +137,12 @@ function EditProfile() {
       >
         {isPending ? "저장 중..." : "수정 완료"}
       </BoxButtonLarge>
+
+      <Toast
+        message="프로필이 수정되었습니다!"
+        isVisible={isToastVisible}
+        onClose={() => setIsToastVisible(false)}
+      />
     </div>
   );
 }
