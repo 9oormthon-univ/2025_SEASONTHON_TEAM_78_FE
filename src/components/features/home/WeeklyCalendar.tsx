@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 import { type IconName, ICON_COLORS } from "@/components/Icon/challenge-color";
-
-type Challenge = {
-  id: string;
-  title: string;
-  description: string;
-  icon: IconName;
-  duration: number;
-  createdAt: string;
-  status: "pending" | "done";
-};
+import type { Challenge } from "@/types/calendar";
 
 interface WeeklyCalendarProps {
   selectedDate: Date;

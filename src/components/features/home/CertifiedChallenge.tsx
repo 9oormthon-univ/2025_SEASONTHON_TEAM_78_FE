@@ -5,17 +5,10 @@ import {
   ICON_LIGHT_COLORS,
 } from "@/components/Icon/challenge-color";
 import CircularProgress from "@/components/common/CircularProgress";
-
-interface CertifiedChallenge {
-  id: number;
-  title: string;
-  challengeIcon: string;
-  achievementRate: number;
-  remainingDays: number;
-}
+import type { Challenge } from "@/types/challenge";
 
 interface CertifiedChallengeProps {
-  challenges: CertifiedChallenge[];
+  challenges: Challenge[];
 }
 
 export default function CertifiedChallenge({
@@ -31,6 +24,18 @@ export default function CertifiedChallenge({
     console.log("챌린지 클릭됨:", challengeId);
     event.stopPropagation();
     navigate(`/challenge/${challengeId}`);
+  };
+
+  // 진행률 계산
+  const getProgressData = (challenge: Challenge) => {
+    const completedDays = Math.round(
+      (challenge.achievementRate / 100) * challenge.remainingDays
+    );
+    return {
+      completedDays,
+      totalDays: challenge.remainingDays,
+      percentage: challenge.achievementRate,
+    };
   };
 
   if (challenges.length === 0) {
@@ -78,10 +83,8 @@ export default function CertifiedChallenge({
             </div>
             {/* 원형 진행률 바 */}
             <CircularProgress
-              completedDays={Math.round(
-                (challenge.achievementRate / 100) * challenge.remainingDays
-              )}
-              totalDays={challenge.remainingDays}
+              completedDays={getProgressData(challenge).completedDays}
+              totalDays={getProgressData(challenge).totalDays}
               iconName={challenge.challengeIcon as IconName}
               showPercentage={true}
             />

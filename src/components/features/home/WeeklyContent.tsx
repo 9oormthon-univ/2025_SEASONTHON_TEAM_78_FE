@@ -1,16 +1,8 @@
-import { useMemo, useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import WeeklyCalendar from "./WeeklyCalendar";
 import ChallengeToggle from "./ChallengeToggle";
 import ChallengeList from "./ChallengeList";
 import CertifiedChallenge from "./CertifiedChallenge";
-import { type IconName } from "@/components/Icon/challenge-color";
-import {
-  getActiveChallenge,
-  getCertifiedChallenges,
-} from "@/lib/api/challenges";
-import { useQuery } from "@tanstack/react-query";
-
 interface WeeklyContentProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
@@ -18,117 +10,54 @@ interface WeeklyContentProps {
 
 type Tab = "pending" | "done";
 
-type Challenge = {
-  id: string;
-  title: string;
-  description: string;
-  icon: IconName;
-  remainingDays: number;
-  achievementRate: number;
-  status: "pending" | "done" | "stopped";
-};
-
 export default function WeeklyContent({
   selectedDate,
   onDateSelect,
 }: WeeklyContentProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState<Tab>("pending");
 
-  // URL에서 탭과 날짜 파라미터 읽기
-  const urlTab = (searchParams.get("tab") as Tab) || "pending";
-  const urlDate = searchParams.get("date");
+  // 임시 데이터
+  const activeChallenges = [
+    {
+      id: 1,
+      title: "매일 물 마시기",
+      challengeIcon: "water",
+      achievementRate: 80,
+      remainingDays: 5,
+    },
+    {
+      id: 2,
+      title: "매일 운동하기",
+      challengeIcon: "run",
+      achievementRate: 60,
+      remainingDays: 10,
+    },
+  ];
 
-  const [tab, setTab] = useState<Tab>(urlTab);
+  const certifiedChallenges = [
+    {
+      id: 3,
+      title: "매일 독서하기",
+      challengeIcon: "book",
+      achievementRate: 100,
+      remainingDays: 0,
+    },
+    {
+      id: 4,
+      title: "매일 정리하기",
+      challengeIcon: "broom",
+      achievementRate: 90,
+      remainingDays: 0,
+    },
+  ];
 
-  // 사용할 날짜 결정: URL에 날짜가 있으면 그것을 사용, 없으면 selectedDate 사용
-  const dateToUse = urlDate || selectedDate.toISOString().split("T")[0];
-
-  // 활성 챌린지 조회
-  const {
-    data: activeChallenges,
-    isLoading: activeLoading,
-    isError: activeError,
-  } = useQuery({
-    queryKey: ["activeChallenge"],
-    queryFn: getActiveChallenge,
-  });
-
-  // 인증 완료 챌린지 조회
-  const {
-    data: certifiedChallenges,
-    isLoading: certifiedLoading,
-    isError: certifiedError,
-  } = useQuery({
-    queryKey: ["certifiedChallenges", dateToUse],
-    queryFn: () => getCertifiedChallenges(dateToUse),
-    enabled: tab === "done", // done 탭일 때만 호출
-  });
-
-  const hasActiveChallenge = activeChallenges && activeChallenges.length > 0;
-  const hasCertifiedChallenge =
-    certifiedChallenges && certifiedChallenges.length > 0;
-  const isLoading = activeLoading || certifiedLoading;
-  const isError = activeError || certifiedError;
-  const isCertifiedError = tab === "done" && certifiedError;
-
-  // 챌린지 데이터를 기존 형식으로 변환
-  const challenges: Challenge[] = useMemo(() => {
-    if (tab === "pending" && hasActiveChallenge) {
-      // 인증할 챌린지 (활성 챌린지)
-      return activeChallenges.map((activeChallenge) => ({
-        id: activeChallenge.id.toString(),
-        title: activeChallenge.title,
-        description: `남은 일수: ${activeChallenge.remainingDays}일 | 진행률: ${activeChallenge.achievementRate}%`,
-        icon: activeChallenge.challengeIcon as IconName,
-        remainingDays: activeChallenge.remainingDays,
-        achievementRate: activeChallenge.achievementRate,
-        status: "pending" as const,
-      }));
-    } else if (tab === "done" && hasCertifiedChallenge) {
-      // 인증 완료 챌린지
-      return certifiedChallenges.map((certifiedChallenge) => ({
-        id: certifiedChallenge.id.toString(),
-        title: certifiedChallenge.title,
-        description: `남은 일수: ${certifiedChallenge.remainingDays}일 | 진행률: ${certifiedChallenge.achievementRate}%`,
-        icon: certifiedChallenge.challengeIcon as IconName,
-        remainingDays: certifiedChallenge.remainingDays,
-        achievementRate: certifiedChallenge.achievementRate,
-        status: "done" as const,
-      }));
-    }
-    return [];
-  }, [
-    tab,
-    hasActiveChallenge,
-    hasCertifiedChallenge,
-    activeChallenges,
-    certifiedChallenges,
-  ]);
-
-  const currentChallenges = challenges;
-
-  // URL 파라미터 변경 감지
-  useEffect(() => {
-    if (urlTab !== tab) {
-      setTab(urlTab);
-    }
-  }, [urlTab, tab]);
+  const isLoading = false;
+  const isError = false;
+  const isCertifiedError = false;
 
   // 탭 변경 핸들러
   const handleTabChange = (newTab: Tab) => {
     setTab(newTab);
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("tab", newTab);
-
-    if (newTab === "done") {
-      // 인증 완료 탭일 때는 현재 사용할 날짜를 URL에 추가
-      newSearchParams.set("date", dateToUse);
-    } else {
-      // 인증할 챌린지 탭일 때는 날짜 파라미터 제거
-      newSearchParams.delete("date");
-    }
-
-    setSearchParams(newSearchParams);
   };
 
   if (isLoading) {
@@ -184,7 +113,7 @@ export default function WeeklyContent({
       </div>
       <div className="flex-1 overflow-hidden">
         {tab === "pending" ? (
-          <ChallengeList challenges={currentChallenges} />
+          <ChallengeList challenges={activeChallenges || []} />
         ) : (
           <CertifiedChallenge challenges={certifiedChallenges || []} />
         )}
