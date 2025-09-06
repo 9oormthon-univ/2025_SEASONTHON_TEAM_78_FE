@@ -29,7 +29,7 @@ export const deleteChallenge = async (challengeId: string) => {
       data: null;
     }>(`/challenges/${challengeId}`);
     return res.data;
-  } catch (error) {
+  } catch {
     // JSON 파싱 에러가 발생해도 성공으로 처리 (삭제는 성공했을 가능성이 높음)
     return { success: "true", data: null };
   }

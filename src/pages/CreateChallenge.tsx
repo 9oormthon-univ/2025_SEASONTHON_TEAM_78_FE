@@ -85,7 +85,7 @@ export default function CreateChallenge() {
       };
 
       // API 호출
-      const response = await createChallenge(challengeData);
+      await createChallenge(challengeData);
 
       // 관련 쿼리 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ["notCertifiedChallenges"] });

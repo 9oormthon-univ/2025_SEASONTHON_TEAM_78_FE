@@ -119,7 +119,7 @@ export default function TodayChallengeForm({
     setIsSubmitting(true);
     try {
       // API 호출
-      const response = await createCertification(challengeId, imageFile, {
+      await createCertification(challengeId, imageFile, {
         title: title.trim(),
         content: content.trim(),
       });

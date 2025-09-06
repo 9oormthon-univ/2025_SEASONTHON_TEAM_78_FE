@@ -22,19 +22,15 @@ export const createCertification = async (
   });
   formData.append("request", requestBlob);
 
-  try {
-    // API 호출 (인증 토큰 자동 포함)
-    const response = await api.request<CreateCertificationResponse>(
-      `/certifications/challenges/${challengeId}`,
-      {
-        method: "POST",
-        body: formData,
-        // Content-Type을 설정하지 않음 (브라우저가 boundary 포함해서 자동 설정)
-      }
-    );
+  // API 호출 (인증 토큰 자동 포함)
+  const response = await api.request<CreateCertificationResponse>(
+    `/certifications/challenges/${challengeId}`,
+    {
+      method: "POST",
+      body: formData,
+      // Content-Type을 설정하지 않음 (브라우저가 boundary 포함해서 자동 설정)
+    }
+  );
 
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return response;
 };
